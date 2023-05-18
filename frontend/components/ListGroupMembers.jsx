@@ -6,7 +6,7 @@ import { useState } from "react";
 import { contractAddresses, contractAbi } from "@/constants/index";
 import { useNetwork, useAccount, useContractRead } from "wagmi";
 
-const MemberList = (groupId) => {
+const ListGroupMembers = (groupId) => {
   const { chain } = useNetwork();
   const { address: account } = useAccount();
 
@@ -74,4 +74,4 @@ const MemberList = (groupId) => {
   );
 };
 
-export default MemberList;
+export default ListGroupMembers;

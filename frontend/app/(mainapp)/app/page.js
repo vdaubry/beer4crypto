@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ClientOnly from "@/utils/clientOnly";
 import CreateGroup from "@/components/CreateGroup";
 import Balance from "@/components/Balance";
-import GroupList from "@/components/GroupList";
+import ListGroups from "@/components/ListGroups";
 
 export default function App() {
   const [hasMounted, setHasMounted] = useState(false);
@@ -22,7 +22,7 @@ export default function App() {
   if (!hasMounted) return null;
   return (
     <ClientOnly>
-      <GroupList />
+      <ListGroups />
       <CreateGroup />
       <Balance />
     </ClientOnly>

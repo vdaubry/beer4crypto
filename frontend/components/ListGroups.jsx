@@ -4,7 +4,7 @@ import { useState } from "react";
 import { contractAddresses, contractAbi } from "@/constants/index";
 import { useNetwork, useAccount, useContractRead } from "wagmi";
 
-const GroupList = () => {
+const ListGroups = () => {
   const { chain } = useNetwork();
   const { address: account } = useAccount();
 
@@ -65,4 +65,4 @@ const GroupList = () => {
   );
 };
 
-export default GroupList;
+export default ListGroups;
