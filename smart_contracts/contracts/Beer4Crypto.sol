@@ -48,6 +48,13 @@ contract Beer4Crypto {
         bytes32 groupid,
         uint256 maxBetDateInterval
     );
+    event EventCreated(
+        address creator,
+        uint256 eventDate,
+        uint256 minDeposit,
+        bytes32 groupid,
+        uint256 maxBetDate
+    );
 
     modifier onlyMember(bytes32 groupId) {
         require(
@@ -92,13 +99,13 @@ contract Beer4Crypto {
         return false;
     }
 
-    function listGroupsForMember(
+    function listMemberGroups(
         address member
     ) public view returns (Group[] memory) {
         return memberGroups[member];
     }
 
-    function listMembersForGroup(
+    function listGroupMembers(
         bytes32 id
     ) public view returns (Member[] memory) {
         return groupMembers[id];

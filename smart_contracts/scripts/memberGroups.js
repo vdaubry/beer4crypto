@@ -1,11 +1,12 @@
 const { ethers, getNamedAccounts, network } = require("hardhat");
 const { networkConfig } = require("../helper-hardhat-config");
 require("dotenv").config();
-const { createAndListGroups } = require("../utils/debugUtils");
+const { listMemberGroups } = require("../utils/debugUtils");
 
 
 async function main() {
-  await createAndListGroups();
+  const { deployer: account } = await getNamedAccounts();
+  await listMemberGroups(account);
 }
 
 main()

@@ -23,7 +23,7 @@ const MemberList = (groupId) => {
   const { data: memberList } = useContractRead({
     address: contractAddress,
     abi: contractAbi,
-    functionName: "listMembersForGroup",
+    functionName: "listGroupMembers",
     args: [groupId.groupId],
   });
 
