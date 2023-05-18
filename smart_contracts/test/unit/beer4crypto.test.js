@@ -145,7 +145,7 @@ if (!developmentChains.includes(network.name)) {
     
         await beer4crypto.createEvent(eventDate, minDeposit, groupId, maxBetDate);
     
-        const events = await beer4crypto.getGroupEvents(groupId);
+        const events = await beer4crypto.listGroupEvents(groupId);
         expect(events.length).to.equal(1);
         expect(events[0].eventDate).to.equal(eventDate);
         expect(events[0].minDeposit).to.equal(minDeposit);

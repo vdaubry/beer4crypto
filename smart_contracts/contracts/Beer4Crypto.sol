@@ -156,7 +156,7 @@ contract Beer4Crypto {
         );
     }
 
-    function getGroupEvents (
+    function listGroupEvents (
         bytes32 groupId
     ) public view returns (Event[] memory) {
         return groupEvents[groupId];
