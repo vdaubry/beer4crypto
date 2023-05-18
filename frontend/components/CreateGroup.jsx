@@ -5,12 +5,11 @@ import { contractAddresses, contractAbi } from "@/constants/index";
 import {
   useNetwork,
   useAccount,
-  useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
+  useContractEvent,
 } from "wagmi";
-import { useContractEvent } from "wagmi";
 import {
   handleFailureNotification,
   handleSuccessNotification,
