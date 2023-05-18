@@ -10,25 +10,23 @@ module.exports = async (hre) => {
 };
 
 const updateAddresses = async () => {
-  //const contract = await ethers.getContract("VestingManager");
-  const vesting_token = await ethers.getContract("Vesting");
+  const beer4crypto = await ethers.getContract("Beer4Crypto");
   const adresses = JSON.parse(fs.readFileSync(frontendAddressesFile, "utf8"));
   const chainId = network.config.chainId;
 
   adresses[chainId] = {
-    //contract: contract.address,
-    vesting_token: vesting_token.address,
+    contract: beer4crypto.address,
   };
 
   fs.writeFileSync(frontendAddressesFile, JSON.stringify(adresses));
 };
 
 const updateAbi = async () => {
-  // const contract = await ethers.getContract("VestingManager");
-  // fs.writeFileSync(
-  //   frontendContractAbiFile,
-  //   contract.interface.format(ethers.utils.FormatTypes.json)
-  // );
+  const contract = await ethers.getContract("Beer4Crypto");
+  fs.writeFileSync(
+    frontendContractAbiFile,
+    contract.interface.format(ethers.utils.FormatTypes.json)
+  );
 };
 
 module.exports.tags = ["all", "frontend"];

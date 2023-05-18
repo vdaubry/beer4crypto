@@ -20,34 +20,32 @@ module.exports = async (hre) => {
    ************************************/
 
   log("---------------------------------");
-  log(`Deploy Vesting with owner : ${deployer}`);
+  log(`Deploy Beer4Crypto with owner : ${deployer}`);
 
   const deployerEthBalance = await ethers.provider.getBalance(deployer);
   console.log(
     `Deployer balance: ${ethers.utils.formatEther(deployerEthBalance)} ETH`
   );
 
-  const tokenSupply = ethers.utils.parseUnits((150 * 10 ** 9).toString(), 18); // 150 billion (18 decimals)
-  const arguments = [deployer, tokenSupply];
-  await deploy("Vesting", {
+  const arguments = [];
+  await deploy("Beer4Crypto", {
     from: deployer,
     args: arguments,
     log: true,
     waitConfirmations: waitBlockConfirmations,
-    gasPrice: ethers.utils.parseUnits("200", "gwei"), //adjust if ProviderError: transaction underpriced
-    gasLimit: 500000,
+    /* adjust if ProviderError: transaction underpriced */
+    //gasPrice: ethers.utils.parseUnits("200", "gwei"),
+    //gasLimit: 30000000,
   });
 
   log("---------------------------------");
-  log(`Vesting token deployed with owner : ${deployer}`);
+  log(`Beer4Crypto deployed with owner : ${deployer}`);
 
-  const vestingToken = await ethers.getContract("Vesting", deployer);
-  const vestingBalance = await vestingToken.balanceOf(deployer);
-  console.log(`Deployer Got ${vestingBalance.toString()} tokens`);
+  const beer4crypto = await ethers.getContract("Beer4Crypto", deployer);
 
   /***********************************
    *
-   * Verify the deployment
+   *  rify the deployment
    *
    ************************************/
   if (
@@ -55,9 +53,9 @@ module.exports = async (hre) => {
     process.env.ETHERSCAN_API_KEY
   ) {
     log("Verifying...");
-    await verify(vestingToken.address, arguments);
+    await verify(beer4crypto.address, arguments);
   }
   log("----------------------------------------------------");
 };
 
-module.exports.tags = ["all", "vesting"];
+module.exports.tags = ["all", "beer4crypto"];

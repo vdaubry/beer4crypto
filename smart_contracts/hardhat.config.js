@@ -16,6 +16,11 @@ module.exports = {
     compilers: [
       {
         version: "0.8.19",
+        settings: {
+          optimizer: {
+            enabled: true,
+          },
+        },
       },
     ],
   },
@@ -66,6 +71,12 @@ module.exports = {
   },
   mocha: {
     timeout: 200000, // 200 seconds max for running tests
+  },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
   },
 };
 

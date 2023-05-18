@@ -1,4 +1,7 @@
-import "../../styles/globals.css";
+import LandingHeader from "@/components/LandingHeader";
+import "@/styles/globals.css";
+import { Inter } from "next/font/google";
+import Head from "next/head";
 
 const RootLayout = ({ children }) => (
   <html lang="en">
