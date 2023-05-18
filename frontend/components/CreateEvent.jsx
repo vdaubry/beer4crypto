@@ -22,20 +22,32 @@ import {
   handleSuccessNotification,
 } from "@/utils/notifications";
 
-const CreateEvent = (groupId) => {
-  const computeMaxBetDate = (days) => {
-    const date = new Date();
-    date.setDate(date.getDate() - days);
-    setMaxBetDate(date);
+const daysFromDate = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+const CreateEvent = (params) => {
+  const updateEventDateAndComputeMaxBetDate = (_eventDate, interval) => {
+    const _maxBetDate = new Date(_eventDate);
+    _maxBetDate.setDate(_maxBetDate.getDate() - interval);
+    setEventDate(_eventDate)
+    setMaxBetDate(_maxBetDate);
+    setMaxBetInterval(interval);
   };
 
+  const defaultInterval = 7;
+  const today = new Date();
+  const next_week = daysFromDate(today, defaultInterval)
   const { chain } = useNetwork();
   const { address: account } = useAccount();
-  const [eventDate, setEventDate] = useState(new Date());
+  const [eventDate, setEventDate] = useState(next_week);
+  const [maxBetInterval, setMaxBetInterval] = useState(defaultInterval);
   const [minDeposit, setMinDeposit] = useState(
     ethers.utils.parseEther("0.0025")
-  ); //0.0025 ETH
-  const [maxBetDate, setMaxBetDate] = useState(0);
+  );
+  const [maxBetDate, setMaxBetDate] = useState(today);
 
   let contractAddress;
 
@@ -48,7 +60,12 @@ const CreateEvent = (groupId) => {
     address: contractAddress,
     abi: contractAbi,
     functionName: "createEvent",
-    args: [eventDate, minDeposit, groupId, maxBetDate],
+    args: [
+      eventDate.getTime(), 
+      minDeposit.toString(), 
+      params.groupId, 
+      maxBetDate.getTime()
+    ],
   });
 
   const { data, write: createEvent } = useContractWrite({
@@ -77,7 +94,6 @@ const CreateEvent = (groupId) => {
   });
 
   useEffect(() => {
-    computeMaxBetDate(1);
   }, []);
 
   return (
@@ -90,10 +106,12 @@ const CreateEvent = (groupId) => {
             </h2>
             <DatePicker
               selected={eventDate}
-              onChange={(date) => setEventDate(date)}
+              onChange={(date) => updateEventDateAndComputeMaxBetDate(date, maxBetInterval)}
             />
-            <Listbox value={7} onChange={console.log("foo")}>
-              <Listbox.Button>Foo</Listbox.Button>
+            {/* <p>Max bet Date = {maxBetDate.toISOString().split('T')[0]}</p>
+            <p>Event Date = {eventDate.toISOString().split('T')[0]}</p> */}
+            <Listbox value={defaultInterval} onChange={(value) => { updateEventDateAndComputeMaxBetDate(eventDate, value) }}>
+              <Listbox.Button>Number of days before closing bets</Listbox.Button>
               <Listbox.Options>
                 <Listbox.Option value={1}>1 day</Listbox.Option>
                 <Listbox.Option value={7}>1 week</Listbox.Option>

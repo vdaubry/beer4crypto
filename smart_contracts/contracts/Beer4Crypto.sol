@@ -9,7 +9,7 @@ contract Beer4Crypto {
         uint256 eventDate;
         uint256 minDeposit;
         bool ended;
-        bytes32 groupid;
+        bytes32 groupId ;
         uint256 maxBetDate;
         uint256 actualEthPrice;
     }
@@ -45,14 +45,14 @@ contract Beer4Crypto {
         address creator,
         uint256 pickWinnerDate,
         uint256 minDeposit,
-        bytes32 groupid,
+        bytes32 groupId,
         uint256 maxBetDateInterval
     );
     event EventCreated(
         address creator,
         uint256 eventDate,
         uint256 minDeposit,
-        bytes32 groupid,
+        bytes32 groupId,
         uint256 maxBetDate
     );
 
@@ -125,26 +125,40 @@ contract Beer4Crypto {
     function createEvent(
         uint256 eventDate,
         uint256 minDeposit,
-        bytes32 groupid,
+        bytes32 groupId,
         uint256 maxBetDate
-    ) public onlyMember(groupid) {
+    ) public onlyMember(groupId) {
+        require(
+            eventDate > block.timestamp,
+            "Event date must be in the future"
+        );
+        require(
+            eventDate > maxBetDate,
+            "Event date must be greater than max bet date"
+        );
         Event memory event_ = Event(
             msg.sender,
             eventDate,
             minDeposit,
             false,
-            groupid,
+            groupId,
             maxBetDate,
             0
         );
-        groupEvents[groupid].push(event_);
+        groupEvents[groupId].push(event_);
 
         emit EventCreated(
             msg.sender,
             eventDate,
             minDeposit,
-            groupid,
+            groupId,
             maxBetDate
         );
+    }
+
+    function getGroupEvents (
+        bytes32 groupId
+    ) public view returns (Event[] memory) {
+        return groupEvents[groupId];
     }
 }
