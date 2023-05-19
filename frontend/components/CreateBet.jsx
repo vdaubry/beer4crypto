@@ -1,13 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { FaInstagram } from "react-icons/fa";
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { ethers } from "ethers";
 import { contractAddresses, contractAbi } from "@/constants/index";
 import {
   useNetwork,
   useAccount,
-  useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
@@ -18,12 +22,8 @@ import {
   handleSuccessNotification,
 } from "@/utils/notifications";
 
-const InviteMember = (groupId) => {
-  const { chain } = useNetwork();
-  const { address: account } = useAccount();
-  const [memberAddress, setMemberAddress] = useState("");
-  const [memberNickname, setMemberNickname] = useState("");
 
+const CreateBet = (params) => {
   let contractAddress;
 
   if (chain && contractAddresses[chain.id]) {
@@ -34,11 +34,16 @@ const InviteMember = (groupId) => {
   const { config } = usePrepareContractWrite({
     address: contractAddress,
     abi: contractAbi,
-    functionName: "inviteMember",
-    args: [memberAddress, memberNickname, groupId.groupId],
+    functionName: "createEvent",
+    args: [
+      eventDate.getTime(), 
+      minDeposit.toString(), 
+      params.eventId, 
+      maxBetDate.getTime()
+    ],
   });
 
-  const { data, write: inviteMember } = useContractWrite({
+  const { data, write: createEvent } = useContractWrite({
     ...config,
     onError(error) {
       handleFailureNotification(error.message);
@@ -48,7 +53,7 @@ const InviteMember = (groupId) => {
   useContractEvent({
     address: contractAddress,
     abi: contractAbi,
-    eventName: "GroupCreated",
+    eventName: "EventCreated",
     listener(log) {},
   });
 
@@ -63,46 +68,42 @@ const InviteMember = (groupId) => {
     },
   });
 
+  useEffect(() => {
+  }, []);
+
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">
       <div className="max-w-2xl w-full my-4 ">
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
           <div className="mb-4">
-            <h2
-              htmlFor="groupName"
-              className="block text-gray-700 text-2xl font-bold mb-2"
-            >
-              Invite a new member
+            <h2 className="block text-gray-700 text-2xl font-bold mb-2">
+              Schedule a new event
             </h2>
-            <input
-              id="Nickname"
-              type="text"
-              placeholder="Member nickname"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              onChange={(event) => {
-                setMemberNickname(event.target.value);
-              }}
+            <DatePicker
+              selected={eventDate}
+              onChange={(date) => updateEventDateAndComputeMaxBetDate(date, maxBetInterval)}
             />
-            <input
-              id="memberAddress"
-              type="text"
-              placeholder="Member wallet address : 0x.."
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-3"
-              onChange={(event) => {
-                setMemberAddress(event.target.value);
-              }}
-            />
+            {/* <p>Max bet Date = {maxBetDate.toISOString().split('T')[0]}</p>
+            <p>Event Date = {eventDate.toISOString().split('T')[0]}</p> */}
+            <Listbox value={defaultInterval} onChange={(value) => { updateEventDateAndComputeMaxBetDate(eventDate, value) }}>
+              <Listbox.Button>Number of days before closing bets</Listbox.Button>
+              <Listbox.Options>
+                <Listbox.Option value={1}>1 day</Listbox.Option>
+                <Listbox.Option value={7}>1 week</Listbox.Option>
+                <Listbox.Option value={30}>1 month</Listbox.Option>
+              </Listbox.Options>
+            </Listbox>
           </div>
           <div className="flex items-center justify-between">
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              disabled={!inviteMember || !memberAddress || !memberAddress}
+              disabled={!createEvent || !eventDate}
               onClick={() => {
-                inviteMember?.();
+                createEvent?.();
               }}
             >
-              Invite new member
+              Create Event
             </button>
           </div>
         </div>
@@ -111,4 +112,4 @@ const InviteMember = (groupId) => {
   );
 };
 
-export default InviteMember;
+export default CreateBet;

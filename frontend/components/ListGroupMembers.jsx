@@ -17,9 +17,6 @@ const ListGroupMembers = (groupId) => {
     contractAddress = contractAddresses[chainId]["contract"];
   }
 
-  console.log("contractAddress", contractAddress);
-  console.log("groupId", groupId.groupId);
-
   const { data: memberList } = useContractRead({
     address: contractAddress,
     abi: contractAbi,

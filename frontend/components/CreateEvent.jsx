@@ -108,8 +108,8 @@ const CreateEvent = (params) => {
               selected={eventDate}
               onChange={(date) => updateEventDateAndComputeMaxBetDate(date, maxBetInterval)}
             />
-            {/* <p>Max bet Date = {maxBetDate.toISOString().split('T')[0]}</p>
-            <p>Event Date = {eventDate.toISOString().split('T')[0]}</p> */}
+            <p>Max bet Date = {maxBetDate.toISOString().split('T')[0]}</p>
+            <p>Event Date = {eventDate.toISOString().split('T')[0]}</p>
             <Listbox value={defaultInterval} onChange={(value) => { updateEventDateAndComputeMaxBetDate(eventDate, value) }}>
               <Listbox.Button>Number of days before closing bets</Listbox.Button>
               <Listbox.Options>

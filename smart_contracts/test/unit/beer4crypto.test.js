@@ -154,27 +154,48 @@ if (!developmentChains.includes(network.name)) {
       });
     
       it("should revert if event date is in the past", async function () {
-        // Define the input parameters
         const eventDate = Math.floor(Date.now() / 1000) - 86400; // 1 day ago
         const minDeposit = ethers.utils.parseEther("1");
         const maxBetDate = Math.floor(Date.now() / 1000) + 43200; // 12 hours from now
     
-        // Call the createEvent function and expect it to revert
         await expect(
           beer4crypto.createEvent(eventDate, minDeposit, groupId, maxBetDate)
         ).to.be.revertedWith("Event date must be in the future");
       });
     
       it("should revert if max bet date is greater than event date", async function () {
-        // Define the input parameters
         const eventDate = Math.floor(Date.now() / 1000) + 86400; // 1 day from now
         const minDeposit = ethers.utils.parseEther("1");
         const maxBetDate = Math.floor(Date.now() / 1000) + 86400; // 1 day from now
     
-        // Call the createEvent function and expect it to revert
         await expect(
           beer4crypto.createEvent(eventDate, minDeposit, groupId, maxBetDate)
         ).to.be.revertedWith("Event date must be greater than max bet date");
+      });
+
+      it("should revert if event date already exist for same group", async function () {
+        const eventDate = Math.floor(Date.now() / 1000) + 86400; // 1 day from now
+        const minDeposit = ethers.utils.parseEther("1");
+        const maxBetDate = Math.floor(Date.now() / 1000) + 43200; // 12 hours from now
+    
+        beer4crypto.createEvent(eventDate, minDeposit, groupId, maxBetDate)
+        
+        await expect(
+          beer4crypto.createEvent(eventDate, minDeposit, groupId, maxBetDate)
+        ).to.be.revertedWith("Event already exists");
+      });
+
+      it("should not revert if event date already exist for another group", async function () {
+        const eventDate = Math.floor(Date.now() / 1000) + 86400; // 1 day from now
+        const minDeposit = ethers.utils.parseEther("1");
+        const maxBetDate = Math.floor(Date.now() / 1000) + 43200; // 12 hours from now
+    
+        beer4crypto.createEvent(eventDate, minDeposit, groupId, maxBetDate)
+        
+        const groupId2 = await createGroup("MyGroup2", "DeployerNickname");
+        await expect(
+          beer4crypto.createEvent(eventDate, minDeposit, groupId2, maxBetDate)
+        ).to.not.be.reverted;
       });
     });
   });

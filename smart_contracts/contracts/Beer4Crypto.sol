@@ -9,7 +9,7 @@ contract Beer4Crypto {
         uint256 eventDate;
         uint256 minDeposit;
         bool ended;
-        bytes32 groupId ;
+        bytes32 groupId;
         uint256 maxBetDate;
         uint256 actualEthPrice;
     }
@@ -136,6 +136,15 @@ contract Beer4Crypto {
             eventDate > maxBetDate,
             "Event date must be greater than max bet date"
         );
+        bool alreadyExists = false;
+        for (uint256 i = 0; i < groupEvents[groupId].length; i++) {
+            if (groupEvents[groupId][i].eventDate == eventDate) {
+                alreadyExists = true;
+                break;
+            }
+        }
+        require(alreadyExists == false, "Event already exists");
+
         Event memory event_ = Event(
             msg.sender,
             eventDate,
@@ -156,7 +165,7 @@ contract Beer4Crypto {
         );
     }
 
-    function listGroupEvents (
+    function listGroupEvents(
         bytes32 groupId
     ) public view returns (Event[] memory) {
         return groupEvents[groupId];

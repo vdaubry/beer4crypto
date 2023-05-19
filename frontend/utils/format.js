@@ -18,7 +18,8 @@ export const truncatedAmount = (
 };
 
 export const formatDate = (date) => {
-  return new Date(date * 1000).toLocaleDateString();
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(Number(date)).toLocaleDateString('en-US', options);
 };
 
 export const truncatedAmount2 = (
@@ -37,3 +38,7 @@ export const truncatedAmount2 = (
     Math.round(formatedAmount * 10 ** formatDecimals) / 10 ** formatDecimals
   );
 };
+
+export const formatAddress = (address) => {
+  return address.slice(0, 6) + "..." + address.slice(-4);
+}
