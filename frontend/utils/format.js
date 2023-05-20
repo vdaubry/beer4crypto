@@ -22,23 +22,6 @@ export const formatDate = (date) => {
   return new Date(Number(date)).toLocaleDateString('en-US', options);
 };
 
-export const truncatedAmount2 = (
-  amount,
-  tokenDecimals = 18,
-  formatDecimals = 2
-) => {
-  if (!amount) {
-    return 0;
-  }
-  const formatedAmount = ethers.utils.formatUnits(
-    amount.toString(),
-    tokenDecimals
-  );
-  return (
-    Math.round(formatedAmount * 10 ** formatDecimals) / 10 ** formatDecimals
-  );
-};
-
 export const formatAddress = (address) => {
   return address.slice(0, 6) + "..." + address.slice(-4);
 }
