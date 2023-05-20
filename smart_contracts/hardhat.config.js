@@ -62,7 +62,7 @@ module.exports = {
             5: 0,
             31337: 0,
         },
-        user: {
+        user1: {
             default: 1,
         },
         user2: {
