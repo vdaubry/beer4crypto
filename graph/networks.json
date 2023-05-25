@@ -1,12 +1,12 @@
 {
-  "mainnet": {
+  "localhost": {
     "Beer4Crypto": {
-      "address": "0x0DE5Dc4023Df9b27CEF9d3E8B901D4ba38fe8810"
+      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
     }
   },
   "goerli": {
     "Beer4Crypto": {
-      "address": "0x0DE5Dc4023Df9b27CEF9d3E8B901D4ba38fe8810",
+      "address": "0x2570561A620c31094ab0753f9850d056777b20B3",
       "startBlock": 9028213
     }
   }

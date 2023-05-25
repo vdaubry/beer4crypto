@@ -1,0 +1,42 @@
+type BetCreated @entity(immutable: true) {
+  id: Bytes!
+  creator: Bytes! # address
+  pickWinnerDate: BigInt! # uint256
+  minDeposit: BigInt! # uint256
+  groupId: Bytes! # bytes32
+  maxBetDateInterval: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type EventCreated @entity(immutable: true) {
+  id: Bytes!
+  creator: Bytes! # address
+  eventDate: BigInt! # uint256
+  minDeposit: BigInt! # uint256
+  groupId: Bytes! # bytes32
+  maxBetDate: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type GroupCreated @entity(immutable: true) {
+  id: Bytes!
+  name: String! # string
+  Beer4Crypto_id: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MemberInvited @entity(immutable: true) {
+  id: Bytes!
+  groupId: Bytes! # bytes32
+  memberAddress: Bytes! # address
+  nickname: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

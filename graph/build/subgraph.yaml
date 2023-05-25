@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: Beer4Crypto
@@ -19,7 +19,7 @@ dataSources:
         - MemberInvited
       abis:
         - name: Beer4Crypto
-          file: ./abis/Beer4Crypto.json
+          file: Beer4Crypto/abis/Beer4Crypto.json
       eventHandlers:
         - event: BetCreated(address,uint256,uint256,bytes32,uint256)
           handler: handleBetCreated
@@ -29,4 +29,4 @@ dataSources:
           handler: handleGroupCreated
         - event: MemberInvited(bytes32,address,string)
           handler: handleMemberInvited
-      file: ./src/beer-4-crypto.ts
+      file: Beer4Crypto/Beer4Crypto.wasm
