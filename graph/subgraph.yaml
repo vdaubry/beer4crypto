@@ -1,0 +1,32 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Beer4Crypto
+    network: mainnet
+    source:
+      address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      abi: Beer4Crypto
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - BetCreated
+        - EventCreated
+        - GroupCreated
+        - MemberInvited
+      abis:
+        - name: Beer4Crypto
+          file: ./abis/Beer4Crypto.json
+      eventHandlers:
+        - event: BetCreated(address,uint256,uint256,bytes32,uint256)
+          handler: handleBetCreated
+        - event: EventCreated(address,uint256,uint256,bytes32,uint256)
+          handler: handleEventCreated
+        - event: GroupCreated(string,bytes32)
+          handler: handleGroupCreated
+        - event: MemberInvited(bytes32,address,string)
+          handler: handleMemberInvited
+      file: ./src/beer-4-crypto.ts

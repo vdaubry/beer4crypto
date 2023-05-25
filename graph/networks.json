@@ -1,0 +1,13 @@
+{
+  "mainnet": {
+    "Beer4Crypto": {
+      "address": "0x0DE5Dc4023Df9b27CEF9d3E8B901D4ba38fe8810"
+    }
+  },
+  "goerli": {
+    "Beer4Crypto": {
+      "address": "0x0DE5Dc4023Df9b27CEF9d3E8B901D4ba38fe8810",
+      "startBlock": 9028213
+    }
+  }
+}
