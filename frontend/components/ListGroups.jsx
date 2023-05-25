@@ -3,24 +3,28 @@ import Link from "next/link"
 import { useState } from "react"
 import { contractAddresses, contractAbi } from "@/constants/index"
 import { useNetwork, useAccount, useContractRead } from "wagmi"
+import { getMemberGroups } from "@/constants/subgraphQueries"
+import { useQuery } from "@apollo/client"
 
 const ListGroups = () => {
   const { chain } = useNetwork()
   const { address: account } = useAccount()
 
-  let contractAddress
+  // let contractAddress
 
-  if (chain && contractAddresses[chain.id]) {
-    const chainId = chain.id
-    contractAddress = contractAddresses[chainId]["contract"]
-  }
+  // if (chain && contractAddresses[chain.id]) {
+  //   const chainId = chain.id
+  //   contractAddress = contractAddresses[chainId]["contract"]
+  // }
 
-  const { data: groupList } = useContractRead({
-    address: contractAddress,
-    abi: contractAbi,
-    functionName: "listMemberGroups",
-    args: [account],
-  })
+  // const { data: groupList } = useContractRead({
+  //   address: contractAddress,
+  //   abi: contractAbi,
+  //   functionName: "listMemberGroups",
+  //   args: [account],
+  // })
+
+  const { loading, error, data: groupList } = useQuery(getMemberGroups(account))
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">

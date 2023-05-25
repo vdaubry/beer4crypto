@@ -36,11 +36,7 @@ contract Beer4Crypto {
     mapping(uint256 => MemberBet[]) private eventMemberBets;
 
     event GroupCreated(string name, bytes32 id);
-    event MemberInvited(
-        bytes32 groupId,
-        address memberAddress,
-        string nickname
-    );
+    event MemberInvited(bytes32 groupId, address memberAddress, string nickname);
     event BetCreated(
         address creator,
         uint256 pickWinnerDate,
@@ -57,23 +53,13 @@ contract Beer4Crypto {
     );
 
     modifier onlyMember(bytes32 groupId) {
-        require(
-            isMember(groupId, msg.sender),
-            "Only members can call this function"
-        );
+        require(isMember(groupId, msg.sender), "Only members can call this function");
         _;
     }
 
-    function createGroup(
-        string memory groupName,
-        string memory nickname
-    ) public {
+    function createGroup(string memory groupName, string memory nickname) public {
         bytes32 groupId = keccak256(
-            abi.encodePacked(
-                groupName,
-                block.timestamp,
-                blockhash(block.number)
-            )
+            abi.encodePacked(groupName, block.timestamp, blockhash(block.number))
         );
         Group memory group = Group(groupId, groupName);
         Member memory member = Member(msg.sender, nickname);
@@ -82,12 +68,10 @@ contract Beer4Crypto {
         groupMembers[groupId].push(member);
 
         emit GroupCreated(groupName, groupId);
+        emit MemberInvited(groupId, msg.sender, nickname);
     }
 
-    function isMember(
-        bytes32 groupId,
-        address member
-    ) public view returns (bool) {
+    function isMember(bytes32 groupId, address member) public view returns (bool) {
         Member[] memory members = groupMembers[groupId];
 
         for (uint256 i = 0; i < members.length; i++) {
@@ -99,15 +83,11 @@ contract Beer4Crypto {
         return false;
     }
 
-    function listMemberGroups(
-        address member
-    ) public view returns (Group[] memory) {
+    function listMemberGroups(address member) public view returns (Group[] memory) {
         return memberGroups[member];
     }
 
-    function listGroupMembers(
-        bytes32 id
-    ) public view returns (Member[] memory) {
+    function listGroupMembers(bytes32 id) public view returns (Member[] memory) {
         return groupMembers[id];
     }
 
@@ -128,14 +108,8 @@ contract Beer4Crypto {
         bytes32 groupId,
         uint256 maxBetDate
     ) public onlyMember(groupId) {
-        require(
-            eventDate > block.timestamp,
-            "Event date must be in the future"
-        );
-        require(
-            eventDate > maxBetDate,
-            "Event date must be greater than max bet date"
-        );
+        require(eventDate > block.timestamp, "Event date must be in the future");
+        require(eventDate > maxBetDate, "Event date must be greater than max bet date");
         bool alreadyExists = false;
         for (uint256 i = 0; i < groupEvents[groupId].length; i++) {
             if (groupEvents[groupId][i].eventDate == eventDate) {
@@ -156,18 +130,10 @@ contract Beer4Crypto {
         );
         groupEvents[groupId].push(event_);
 
-        emit EventCreated(
-            msg.sender,
-            eventDate,
-            minDeposit,
-            groupId,
-            maxBetDate
-        );
+        emit EventCreated(msg.sender, eventDate, minDeposit, groupId, maxBetDate);
     }
 
-    function listGroupEvents(
-        bytes32 groupId
-    ) public view returns (Event[] memory) {
+    function listGroupEvents(bytes32 groupId) public view returns (Event[] memory) {
         return groupEvents[groupId];
     }
 }
