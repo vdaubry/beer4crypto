@@ -30,11 +30,6 @@ const ListGroups = () => {
     },
   })
 
-  console.log(account)
-  console.log(groupIds)
-  console.log(memberInviteds)
-  console.log(groups)
-
   if (loading || loading2) return null
   if (error || error2) return `Error! ${error} , ${error2}`
 

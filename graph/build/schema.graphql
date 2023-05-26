@@ -25,7 +25,6 @@ type EventCreated @entity(immutable: true) {
 type GroupCreated @entity(immutable: true) {
   id: Bytes!
   name: String! # string
-  Beer4Crypto_id: Bytes! # bytes32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

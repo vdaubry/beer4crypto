@@ -11,6 +11,17 @@ const GET_MEMBER_INVITEDS = gql`
   }
 `
 
+const GET_GROUP_MEMBERS = gql`
+  query GetMemberInviteds($groupId: Bytes!) {
+    memberInviteds(where: { groupId: $groupId }) {
+      id
+      groupId
+      memberAddress
+      nickname
+    }
+  }
+`
+
 const GET_GROUPS = gql`
   query GetGroups($ids: [Bytes!]!) {
     groupCreateds(where: { id_in: $ids }) {
@@ -20,4 +31,4 @@ const GET_GROUPS = gql`
   }
 `
 
-export { GET_MEMBER_INVITEDS, GET_GROUPS }
+export { GET_MEMBER_INVITEDS, GET_GROUPS, GET_GROUP_MEMBERS }
