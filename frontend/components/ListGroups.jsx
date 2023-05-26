@@ -3,28 +3,40 @@ import Link from "next/link"
 import { useState } from "react"
 import { contractAddresses, contractAbi } from "@/constants/index"
 import { useNetwork, useAccount, useContractRead } from "wagmi"
-import { getMemberGroups } from "@/constants/subgraphQueries"
+import { GET_MEMBER_INVITEDS, GET_GROUPS } from "@/constants/subgraphQueries"
 import { useQuery } from "@apollo/client"
 
 const ListGroups = () => {
   const { chain } = useNetwork()
   const { address: account } = useAccount()
 
-  // let contractAddress
+  const {
+    loading,
+    error,
+    data: memberInviteds,
+  } = useQuery(GET_MEMBER_INVITEDS, {
+    variables: { memberAddress: account },
+  })
 
-  // if (chain && contractAddresses[chain.id]) {
-  //   const chainId = chain.id
-  //   contractAddress = contractAddresses[chainId]["contract"]
-  // }
+  const groupIds = memberInviteds?.memberInviteds?.map((memberInvited) => memberInvited.groupId)
+  const {
+    loading: loading2,
+    error: error2,
+    data: groups,
+  } = useQuery(GET_GROUPS, {
+    variables: {
+      ids: groupIds,
+      skip: !groupIds, // skip this query if groupIds is not defined
+    },
+  })
 
-  // const { data: groupList } = useContractRead({
-  //   address: contractAddress,
-  //   abi: contractAbi,
-  //   functionName: "listMemberGroups",
-  //   args: [account],
-  // })
+  console.log(account)
+  console.log(groupIds)
+  console.log(memberInviteds)
+  console.log(groups)
 
-  const { loading, error, data: groupList } = useQuery(getMemberGroups(account))
+  if (loading || loading2) return null
+  if (error || error2) return `Error! ${error} , ${error2}`
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">
@@ -45,7 +57,7 @@ const ListGroups = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {groupList?.map((group, i) => (
+                      {groups.groupCreateds?.map((group, i) => (
                         <tr key={i}>
                           <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
                             <Link href={`/groups/${group.id}`}>{group.name}</Link>

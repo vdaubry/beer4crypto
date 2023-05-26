@@ -2,7 +2,7 @@
 
 import { ConnectKitProvider } from "connectkit"
 import { WagmiConfig } from "wagmi"
-import { client } from "@/utils/wagmi"
+import { client as wagmiClient } from "@/utils/wagmi"
 import AppHeader from "@/components/AppHeader"
 import { Inter } from "next/font/google"
 import { ToastContainer } from "react-toastify"
@@ -12,9 +12,13 @@ import "@/styles/globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
-const client = new ApolloClient({
+const appoloClient = new ApolloClient({
   cache: new InMemoryCache(),
   uri: process.env.NEXT_PUBLIC_SUBGRAPH_URL,
+  onError: ({ networkError, graphQLErrors }) => {
+    console.log("graphQLErrors", graphQLErrors)
+    console.log("networkError", networkError)
+  },
 })
 
 export default function AppLayout({ children }) {
@@ -22,11 +26,13 @@ export default function AppLayout({ children }) {
     <html>
       <head />
       <body className={inter.className}>
-        <WagmiConfig client={client}>
+        <WagmiConfig client={wagmiClient}>
           <ConnectKitProvider>
-            <AppHeader />
-            {children}
-            <ToastContainer />
+            <ApolloProvider client={appoloClient}>
+              <AppHeader />
+              {children}
+              <ToastContainer />
+            </ApolloProvider>
           </ConnectKitProvider>
         </WagmiConfig>
       </body>

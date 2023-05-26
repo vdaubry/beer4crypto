@@ -1,16 +1,23 @@
 import { gql } from "@apollo/client"
 
-const SUBGRAPH_QUERY_URL = "https://api.studio.thegraph.com/query/46699/beer4crypto/v0.0.1"
-
-export const getMemberGroups = (address) => {
-  return gql`
-    {
-      memberInvited(where: { memberAddress: ${address} }) {
-        id
-        groupId
-        memberAddress
-        nickname
-      }
+const GET_MEMBER_INVITEDS = gql`
+  query GetMemberInviteds($memberAddress: String!) {
+    memberInviteds(where: { memberAddress: $memberAddress }) {
+      id
+      groupId
+      memberAddress
+      nickname
     }
-  `
-}
+  }
+`
+
+const GET_GROUPS = gql`
+  query GetGroups($ids: [Bytes!]!) {
+    groupCreateds(where: { id_in: $ids }) {
+      id
+      name
+    }
+  }
+`
+
+export { GET_MEMBER_INVITEDS, GET_GROUPS }

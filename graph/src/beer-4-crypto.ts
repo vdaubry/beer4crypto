@@ -1,3 +1,4 @@
+import { BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import {
   BetCreated as BetCreatedEvent,
   EventCreated as EventCreatedEvent,
@@ -46,30 +47,43 @@ export function handleEventCreated(event: EventCreatedEvent): void {
 }
 
 export function handleGroupCreated(event: GroupCreatedEvent): void {
-  let entity = new GroupCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.name = event.params.name
-  entity.Beer4Crypto_id = event.params.id
+  let group = GroupCreated.load(event.params.id)
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if (!group) {
+    group = new GroupCreated(
+      event.params.id
+    )
+  }
+  
+  group.name = event.params.name
+  group.blockNumber = event.block.number
+  group.blockTimestamp = event.block.timestamp
+  group.transactionHash = event.transaction.hash
 
-  entity.save()
+  group.save()
 }
 
 export function handleMemberInvited(event: MemberInvitedEvent): void {
-  let entity = new MemberInvited(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.groupId = event.params.groupId
-  entity.memberAddress = event.params.memberAddress
-  entity.nickname = event.params.nickname
+  let inviteId = getMemberInvitedEventIdFromParams(event.params.groupId, event.params.memberAddress)
+  let invite = MemberInvited.load(inviteId)
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if(!invite) {
+    invite = new MemberInvited(
+      inviteId
+    )
+  }
+  
+  invite.groupId = event.params.groupId
+  invite.memberAddress = event.params.memberAddress
+  invite.nickname = event.params.nickname
 
-  entity.save()
+  invite.blockNumber = event.block.number
+  invite.blockTimestamp = event.block.timestamp
+  invite.transactionHash = event.transaction.hash
+
+  invite.save()
+}
+
+function getMemberInvitedEventIdFromParams(groupId: Bytes, memberAddress: Address): Bytes {
+  return groupId.concat(memberAddress as Bytes)
 }
