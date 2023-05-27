@@ -41,8 +41,10 @@ contract Beer4Crypto {
     }
 
     mapping(bytes32 groupId => Group) private groups;
+    mapping(bytes32 eventId => GroupEvent) private groupEvents;
     mapping(bytes32 groupId => mapping(address memberAddress => Member)) private groupToMembers;
-    mapping(bytes32 eventId => mapping(uint256 eventDate => GroupEvent)) private eventToGroups;
+    mapping(bytes32 groupId => mapping(uint256 eventDate => bytes32 eventId))
+        private eventToGroups;
     mapping(bytes32 eventId => mapping(address memberAddress => Bet)) private betToEvents;
 
     event GroupCreated(string name, bytes32 id);
@@ -60,7 +62,7 @@ contract Beer4Crypto {
         bytes32 groupId,
         uint256 amountDeposited,
         uint256 predictedEthPrice,
-        uint256 eventId
+        bytes32 eventId
     );
 
     modifier onlyMember(bytes32 groupId) {
@@ -90,7 +92,7 @@ contract Beer4Crypto {
     ) public onlyMember(groupId) {
         require(eventDate > block.timestamp, "Event date must be in the future");
         require(eventDate > maxBetDate, "Event date after max bet date");
-        require(eventToGroups[groupId][eventDate].id == 0, "Event already exists");
+        require(eventToGroups[groupId][eventDate] == 0, "Event already exists");
 
         bytes32 eventId = keccak256(abi.encodePacked(groupId, eventDate));
 
@@ -104,20 +106,11 @@ contract Beer4Crypto {
             maxBetDate,
             0
         );
-        eventToGroups[groupId][eventDate] = groupEvent;
+        groupEvents[eventId] = groupEvent;
+        eventToGroups[groupId][eventDate] = eventId;
 
         emit EventCreated(eventId, msg.sender, eventDate, minDeposit, groupId, maxBetDate);
     }
-
-    // function createBet(
-    //     address creator,
-    //     uint256 betDate,
-    //     uint256 predictedEthPrice,
-    //     bytes32 everntId
-    // ) public payable onlyMember(groupId) {
-    //     Event event =
-    //     require(betDate > block.timestamp, "Bet date must be in the future");
-    // }
 
     function inviteMember(
         address memberAddress,
@@ -130,6 +123,36 @@ contract Beer4Crypto {
         emit MemberInvited(groupId, memberAddress, memberNickname);
     }
 
+    function createBet(bytes32 eventId, uint256 predictedEthPrice) public payable {
+        GroupEvent memory groupEvent = groupEvents[eventId];
+        require(groupEvent.id != 0, "Event does not exist");
+        require(isMember(groupEvent.groupId, msg.sender), "Caller not a group member");
+        require(groupEvent.maxBetDate > block.timestamp, "Bets are closed");
+        require(msg.value >= groupEvent.minDeposit, "Min Bet amount is not met");
+        require(
+            betToEvents[groupEvent.id][msg.sender].creator == address(0),
+            "Bet already exists"
+        );
+
+        Bet memory bet = Bet(
+            msg.sender,
+            block.timestamp,
+            predictedEthPrice,
+            msg.value,
+            BetStatus.PENDING,
+            groupEvent.id
+        );
+        betToEvents[groupEvent.id][msg.sender] = bet;
+
+        emit BetCreated(
+            msg.sender,
+            groupEvent.groupId,
+            msg.value,
+            predictedEthPrice,
+            groupEvent.id
+        );
+    }
+
     function isMember(bytes32 groupId, address member) public view returns (bool) {
         return groupToMembers[groupId][member].memberAddress != address(0);
     }
@@ -138,6 +161,11 @@ contract Beer4Crypto {
         bytes32 groupId,
         uint256 eventDate
     ) public view returns (GroupEvent memory) {
-        return eventToGroups[groupId][eventDate];
+        bytes32 eventId = eventToGroups[groupId][eventDate];
+        return groupEvents[eventId];
+    }
+
+    function getBet(bytes32 eventId, address memberAddress) public view returns (Bet memory) {
+        return betToEvents[eventId][memberAddress];
     }
 }
