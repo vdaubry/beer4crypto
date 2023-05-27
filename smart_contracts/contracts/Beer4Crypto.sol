@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "hardhat/console.sol";
+import "../node_modules/hardhat/console.sol";
 
 contract Beer4Crypto {
     enum BetStatus {
