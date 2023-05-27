@@ -44,6 +44,22 @@ const listGroupMembers = async (id) => {
     })
 }
 
+const CreateEvent = async (deployer, groupId, eventDate, minDeposit, maxBetDate) => {
+    console.log(
+        `CreateEvent called with: 
+            deployer: ${deployer}, 
+            groupId: ${groupId}, 
+            eventDate: ${eventDate}, 
+            minDeposit: ${minDeposit}, 
+            maxBetDate: ${maxBetDate}
+        `
+    )
+    const crypto4beer = await ethers.getContract("Beer4Crypto", deployer)
+
+    const tx1 = await crypto4beer.createEvent(groupId, eventDate, minDeposit, maxBetDate)
+    await tx1.wait()
+}
+
 module.exports = {
     createGroup,
     inviteMember,

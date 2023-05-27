@@ -4,7 +4,14 @@ pragma solidity ^0.8.19;
 import "hardhat/console.sol";
 
 contract Beer4Crypto {
-    struct Event {
+    enum BetStatus {
+        PENDING,
+        LOST,
+        WON
+    }
+
+    struct GroupEvent {
+        bytes32 id;
         address creator;
         uint256 eventDate;
         uint256 minDeposit;
@@ -14,10 +21,13 @@ contract Beer4Crypto {
         uint256 actualEthPrice;
     }
 
-    struct MemberBet {
-        address member;
+    struct Bet {
+        address creator;
         uint256 betDate;
         uint256 predictedEthPrice;
+        uint256 amountDeposited;
+        BetStatus status;
+        bytes32 eventId;
     }
 
     struct Group {
@@ -30,30 +40,31 @@ contract Beer4Crypto {
         string nickname;
     }
 
-    mapping(bytes32 => Member[]) private groupMembers;
-    mapping(bytes32 => Event[]) private groupEvents;
-    mapping(address => Group[]) private memberGroups;
-    mapping(uint256 => MemberBet[]) private eventMemberBets;
+    mapping(bytes32 groupId => Group) private groups;
+    mapping(bytes32 groupId => mapping(address memberAddress => Member)) private groupToMembers;
+    mapping(bytes32 eventId => mapping(uint256 eventDate => GroupEvent)) private eventToGroups;
+    mapping(bytes32 eventId => mapping(address memberAddress => Bet)) private betToEvents;
 
     event GroupCreated(string name, bytes32 id);
     event MemberInvited(bytes32 groupId, address memberAddress, string nickname);
-    event BetCreated(
-        address creator,
-        uint256 pickWinnerDate,
-        uint256 minDeposit,
-        bytes32 groupId,
-        uint256 maxBetDateInterval
-    );
     event EventCreated(
+        bytes32 eventId,
         address creator,
         uint256 eventDate,
         uint256 minDeposit,
         bytes32 groupId,
         uint256 maxBetDate
     );
+    event BetCreated(
+        address creator,
+        bytes32 groupId,
+        uint256 amountDeposited,
+        uint256 predictedEthPrice,
+        uint256 eventId
+    );
 
     modifier onlyMember(bytes32 groupId) {
-        require(isMember(groupId, msg.sender), "Only members can call this function");
+        require(isMember(groupId, msg.sender), "Caller not a group member");
         _;
     }
 
@@ -64,42 +75,11 @@ contract Beer4Crypto {
         Group memory group = Group(groupId, groupName);
         Member memory member = Member(msg.sender, nickname);
 
-        memberGroups[msg.sender].push(group);
-        groupMembers[groupId].push(member);
+        groups[groupId] = group;
+        groupToMembers[groupId][msg.sender] = member;
 
         emit GroupCreated(groupName, groupId);
         emit MemberInvited(groupId, msg.sender, nickname);
-    }
-
-    function isMember(bytes32 groupId, address member) public view returns (bool) {
-        Member[] memory members = groupMembers[groupId];
-
-        for (uint256 i = 0; i < members.length; i++) {
-            if (members[i].memberAddress == member) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function listMemberGroups(address member) public view returns (Group[] memory) {
-        return memberGroups[member];
-    }
-
-    function listGroupMembers(bytes32 id) public view returns (Member[] memory) {
-        return groupMembers[id];
-    }
-
-    function inviteMember(
-        address memberAddress,
-        string memory memberNickname,
-        bytes32 groupId
-    ) public onlyMember(groupId) {
-        Member memory member = Member(memberAddress, memberNickname);
-        groupMembers[groupId].push(member);
-
-        emit MemberInvited(groupId, memberAddress, memberNickname);
     }
 
     function createEvent(
@@ -109,17 +89,13 @@ contract Beer4Crypto {
         uint256 maxBetDate
     ) public onlyMember(groupId) {
         require(eventDate > block.timestamp, "Event date must be in the future");
-        require(eventDate > maxBetDate, "Event date must be greater than max bet date");
-        bool alreadyExists = false;
-        for (uint256 i = 0; i < groupEvents[groupId].length; i++) {
-            if (groupEvents[groupId][i].eventDate == eventDate) {
-                alreadyExists = true;
-                break;
-            }
-        }
-        require(alreadyExists == false, "Event already exists");
+        require(eventDate > maxBetDate, "Event date after max bet date");
+        require(eventToGroups[groupId][eventDate].id == 0, "Event already exists");
 
-        Event memory event_ = Event(
+        bytes32 eventId = keccak256(abi.encodePacked(groupId, eventDate));
+
+        GroupEvent memory groupEvent = GroupEvent(
+            eventId,
             msg.sender,
             eventDate,
             minDeposit,
@@ -128,12 +104,40 @@ contract Beer4Crypto {
             maxBetDate,
             0
         );
-        groupEvents[groupId].push(event_);
+        eventToGroups[groupId][eventDate] = groupEvent;
 
-        emit EventCreated(msg.sender, eventDate, minDeposit, groupId, maxBetDate);
+        emit EventCreated(eventId, msg.sender, eventDate, minDeposit, groupId, maxBetDate);
     }
 
-    function listGroupEvents(bytes32 groupId) public view returns (Event[] memory) {
-        return groupEvents[groupId];
+    // function createBet(
+    //     address creator,
+    //     uint256 betDate,
+    //     uint256 predictedEthPrice,
+    //     bytes32 everntId
+    // ) public payable onlyMember(groupId) {
+    //     Event event =
+    //     require(betDate > block.timestamp, "Bet date must be in the future");
+    // }
+
+    function inviteMember(
+        address memberAddress,
+        string memory memberNickname,
+        bytes32 groupId
+    ) public onlyMember(groupId) {
+        Member memory member = Member(memberAddress, memberNickname);
+        groupToMembers[groupId][memberAddress] = member;
+
+        emit MemberInvited(groupId, memberAddress, memberNickname);
+    }
+
+    function isMember(bytes32 groupId, address member) public view returns (bool) {
+        return groupToMembers[groupId][member].memberAddress != address(0);
+    }
+
+    function getGroupEvent(
+        bytes32 groupId,
+        uint256 eventDate
+    ) public view returns (GroupEvent memory) {
+        return eventToGroups[groupId][eventDate];
     }
 }

@@ -31,4 +31,17 @@ const GET_GROUPS = gql`
   }
 `
 
-export { GET_MEMBER_INVITEDS, GET_GROUPS, GET_GROUP_MEMBERS }
+const GET_GROUP_EVENTS = gql`
+  query GetEventCreateds($groupId: Bytes!) {
+    eventCreateds(where: { groupId: $groupId }) {
+      id
+      creator
+      eventDate
+      minDeposit
+      groupId
+      maxBetDate
+    }
+  }
+`
+
+export { GET_MEMBER_INVITEDS, GET_GROUPS, GET_GROUP_MEMBERS, GET_GROUP_EVENTS }

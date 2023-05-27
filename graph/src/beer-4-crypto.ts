@@ -30,20 +30,26 @@ export function handleBetCreated(event: BetCreatedEvent): void {
 }
 
 export function handleEventCreated(event: EventCreatedEvent): void {
-  let entity = new EventCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.creator = event.params.creator
-  entity.eventDate = event.params.eventDate
-  entity.minDeposit = event.params.minDeposit
-  entity.groupId = event.params.groupId
-  entity.maxBetDate = event.params.maxBetDate
+  let eventCreatedId = getEventCreatedIdFromParams(event.params.groupId, event.params.eventDate)
+  let eventCreated = EventCreated.load(eventCreatedId)
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if(!eventCreated) {
+    eventCreated = new EventCreated(
+      eventCreatedId
+    ) 
+  }
+  
+  eventCreated.creator = event.params.creator
+  eventCreated.eventDate = event.params.eventDate
+  eventCreated.minDeposit = event.params.minDeposit
+  eventCreated.groupId = event.params.groupId
+  eventCreated.maxBetDate = event.params.maxBetDate
 
-  entity.save()
+  eventCreated.blockNumber = event.block.number
+  eventCreated.blockTimestamp = event.block.timestamp
+  eventCreated.transactionHash = event.transaction.hash
+
+  eventCreated.save()
 }
 
 export function handleGroupCreated(event: GroupCreatedEvent): void {
@@ -86,4 +92,8 @@ export function handleMemberInvited(event: MemberInvitedEvent): void {
 
 function getMemberInvitedEventIdFromParams(groupId: Bytes, memberAddress: Address): Bytes {
   return groupId.concat(memberAddress as Bytes)
+}
+
+function getEventCreatedIdFromParams(groupId: Bytes, eventDate: BigInt): Bytes {
+  return Bytes.fromHexString(groupId.toHexString() + eventDate.toHexString())
 }

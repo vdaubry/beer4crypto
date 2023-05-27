@@ -1,7 +1,7 @@
 const { ethers, getNamedAccounts, network } = require("hardhat")
 const { networkConfig } = require("../helper-hardhat-config")
 require("dotenv").config()
-const { createAndListGroups, createGroup, inviteMember } = require("../utils/debugUtils")
+const { createGroup, inviteMember } = require("../utils/debugUtils")
 
 async function main() {
     const { deployer, user1, user2 } = await getNamedAccounts()
@@ -18,6 +18,8 @@ async function main() {
     // Create an populate Group3
     const group3Id = await createGroup(user1, "Group3", "user1")
     await inviteMember(user1, user2, "user2", group3Id)
+
+    // Create events for Group1
 }
 
 main()
