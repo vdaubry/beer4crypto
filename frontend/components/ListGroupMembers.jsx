@@ -1,22 +1,10 @@
 "use client"
 
 import React from "react"
-import { contractAddresses, contractAbi } from "@/constants/index"
-import { useNetwork, useAccount, useContractRead } from "wagmi"
 import { GET_GROUP_MEMBERS } from "@/constants/subgraphQueries"
 import { useQuery } from "@apollo/client"
 
 const ListGroupMembers = (params) => {
-  const { chain } = useNetwork()
-  const { address: account } = useAccount()
-
-  let contractAddress
-
-  if (chain && contractAddresses[chain.id]) {
-    const chainId = chain.id
-    contractAddress = contractAddresses[chainId]["contract"]
-  }
-
   const {
     loading,
     error,
@@ -24,13 +12,6 @@ const ListGroupMembers = (params) => {
   } = useQuery(GET_GROUP_MEMBERS, {
     variables: { groupId: params.groupId },
   })
-
-  // const { data: memberList } = useContractRead({
-  //   address: contractAddress,
-  //   abi: contractAbi,
-  //   functionName: "listGroupMembers",
-  //   args: [groupId.groupId],
-  // })
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">

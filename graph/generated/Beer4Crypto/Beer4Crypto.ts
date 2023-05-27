@@ -27,20 +27,20 @@ export class BetCreated__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get pickWinnerDate(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+  get groupId(): Bytes {
+    return this._event.parameters[1].value.toBytes();
   }
 
-  get minDeposit(): BigInt {
+  get amountDeposited(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
-  get groupId(): Bytes {
-    return this._event.parameters[3].value.toBytes();
+  get predictedEthPrice(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
   }
 
-  get maxBetDateInterval(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+  get eventId(): Bytes {
+    return this._event.parameters[4].value.toBytes();
   }
 }
 
@@ -57,24 +57,28 @@ export class EventCreated__Params {
     this._event = event;
   }
 
+  get eventId(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
   get creator(): Address {
-    return this._event.parameters[0].value.toAddress();
+    return this._event.parameters[1].value.toAddress();
   }
 
   get eventDate(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
-  }
-
-  get minDeposit(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
+  get minDeposit(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
   get groupId(): Bytes {
-    return this._event.parameters[3].value.toBytes();
+    return this._event.parameters[4].value.toBytes();
   }
 
   get maxBetDate(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+    return this._event.parameters[5].value.toBigInt();
   }
 }
 
@@ -126,59 +130,149 @@ export class MemberInvited__Params {
   }
 }
 
-export class Beer4Crypto__listGroupEventsResultValue0Struct extends ethereum.Tuple {
+export class Beer4Crypto__getBetResultValue0Struct extends ethereum.Tuple {
   get creator(): Address {
     return this[0].toAddress();
   }
 
-  get eventDate(): BigInt {
+  get betDate(): BigInt {
     return this[1].toBigInt();
   }
 
-  get minDeposit(): BigInt {
+  get predictedEthPrice(): BigInt {
     return this[2].toBigInt();
   }
 
-  get ended(): boolean {
-    return this[3].toBoolean();
+  get amountDeposited(): BigInt {
+    return this[3].toBigInt();
   }
 
-  get groupId(): Bytes {
-    return this[4].toBytes();
+  get status(): i32 {
+    return this[4].toI32();
   }
 
-  get maxBetDate(): BigInt {
-    return this[5].toBigInt();
-  }
-
-  get actualEthPrice(): BigInt {
-    return this[6].toBigInt();
+  get eventId(): Bytes {
+    return this[5].toBytes();
   }
 }
 
-export class Beer4Crypto__listGroupMembersResultValue0Struct extends ethereum.Tuple {
-  get memberAddress(): Address {
-    return this[0].toAddress();
-  }
-
-  get nickname(): string {
-    return this[1].toString();
-  }
-}
-
-export class Beer4Crypto__listMemberGroupsResultValue0Struct extends ethereum.Tuple {
+export class Beer4Crypto__getGroupEventResultValue0Struct extends ethereum.Tuple {
   get id(): Bytes {
     return this[0].toBytes();
   }
 
-  get name(): string {
-    return this[1].toString();
+  get creator(): Address {
+    return this[1].toAddress();
+  }
+
+  get eventDate(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get minDeposit(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get ended(): boolean {
+    return this[4].toBoolean();
+  }
+
+  get groupId(): Bytes {
+    return this[5].toBytes();
+  }
+
+  get maxBetDate(): BigInt {
+    return this[6].toBigInt();
+  }
+
+  get actualEthPrice(): BigInt {
+    return this[7].toBigInt();
   }
 }
 
 export class Beer4Crypto extends ethereum.SmartContract {
   static bind(address: Address): Beer4Crypto {
     return new Beer4Crypto("Beer4Crypto", address);
+  }
+
+  getBet(
+    eventId: Bytes,
+    memberAddress: Address
+  ): Beer4Crypto__getBetResultValue0Struct {
+    let result = super.call(
+      "getBet",
+      "getBet(bytes32,address):((address,uint256,uint256,uint256,uint8,bytes32))",
+      [
+        ethereum.Value.fromFixedBytes(eventId),
+        ethereum.Value.fromAddress(memberAddress)
+      ]
+    );
+
+    return changetype<Beer4Crypto__getBetResultValue0Struct>(
+      result[0].toTuple()
+    );
+  }
+
+  try_getBet(
+    eventId: Bytes,
+    memberAddress: Address
+  ): ethereum.CallResult<Beer4Crypto__getBetResultValue0Struct> {
+    let result = super.tryCall(
+      "getBet",
+      "getBet(bytes32,address):((address,uint256,uint256,uint256,uint8,bytes32))",
+      [
+        ethereum.Value.fromFixedBytes(eventId),
+        ethereum.Value.fromAddress(memberAddress)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      changetype<Beer4Crypto__getBetResultValue0Struct>(value[0].toTuple())
+    );
+  }
+
+  getGroupEvent(
+    groupId: Bytes,
+    eventDate: BigInt
+  ): Beer4Crypto__getGroupEventResultValue0Struct {
+    let result = super.call(
+      "getGroupEvent",
+      "getGroupEvent(bytes32,uint256):((bytes32,address,uint256,uint256,bool,bytes32,uint256,uint256))",
+      [
+        ethereum.Value.fromFixedBytes(groupId),
+        ethereum.Value.fromUnsignedBigInt(eventDate)
+      ]
+    );
+
+    return changetype<Beer4Crypto__getGroupEventResultValue0Struct>(
+      result[0].toTuple()
+    );
+  }
+
+  try_getGroupEvent(
+    groupId: Bytes,
+    eventDate: BigInt
+  ): ethereum.CallResult<Beer4Crypto__getGroupEventResultValue0Struct> {
+    let result = super.tryCall(
+      "getGroupEvent",
+      "getGroupEvent(bytes32,uint256):((bytes32,address,uint256,uint256,bool,bytes32,uint256,uint256))",
+      [
+        ethereum.Value.fromFixedBytes(groupId),
+        ethereum.Value.fromUnsignedBigInt(eventDate)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      changetype<Beer4Crypto__getGroupEventResultValue0Struct>(
+        value[0].toTuple()
+      )
+    );
   }
 
   isMember(groupId: Bytes, member: Address): boolean {
@@ -201,104 +295,39 @@ export class Beer4Crypto extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
+}
 
-  listGroupEvents(
-    groupId: Bytes
-  ): Array<Beer4Crypto__listGroupEventsResultValue0Struct> {
-    let result = super.call(
-      "listGroupEvents",
-      "listGroupEvents(bytes32):((address,uint256,uint256,bool,bytes32,uint256,uint256)[])",
-      [ethereum.Value.fromFixedBytes(groupId)]
-    );
-
-    return result[0].toTupleArray<
-      Beer4Crypto__listGroupEventsResultValue0Struct
-    >();
+export class CreateBetCall extends ethereum.Call {
+  get inputs(): CreateBetCall__Inputs {
+    return new CreateBetCall__Inputs(this);
   }
 
-  try_listGroupEvents(
-    groupId: Bytes
-  ): ethereum.CallResult<
-    Array<Beer4Crypto__listGroupEventsResultValue0Struct>
-  > {
-    let result = super.tryCall(
-      "listGroupEvents",
-      "listGroupEvents(bytes32):((address,uint256,uint256,bool,bytes32,uint256,uint256)[])",
-      [ethereum.Value.fromFixedBytes(groupId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      value[0].toTupleArray<Beer4Crypto__listGroupEventsResultValue0Struct>()
-    );
+  get outputs(): CreateBetCall__Outputs {
+    return new CreateBetCall__Outputs(this);
+  }
+}
+
+export class CreateBetCall__Inputs {
+  _call: CreateBetCall;
+
+  constructor(call: CreateBetCall) {
+    this._call = call;
   }
 
-  listGroupMembers(
-    id: Bytes
-  ): Array<Beer4Crypto__listGroupMembersResultValue0Struct> {
-    let result = super.call(
-      "listGroupMembers",
-      "listGroupMembers(bytes32):((address,string)[])",
-      [ethereum.Value.fromFixedBytes(id)]
-    );
-
-    return result[0].toTupleArray<
-      Beer4Crypto__listGroupMembersResultValue0Struct
-    >();
+  get eventId(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
   }
 
-  try_listGroupMembers(
-    id: Bytes
-  ): ethereum.CallResult<
-    Array<Beer4Crypto__listGroupMembersResultValue0Struct>
-  > {
-    let result = super.tryCall(
-      "listGroupMembers",
-      "listGroupMembers(bytes32):((address,string)[])",
-      [ethereum.Value.fromFixedBytes(id)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      value[0].toTupleArray<Beer4Crypto__listGroupMembersResultValue0Struct>()
-    );
+  get predictedEthPrice(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
   }
+}
 
-  listMemberGroups(
-    member: Address
-  ): Array<Beer4Crypto__listMemberGroupsResultValue0Struct> {
-    let result = super.call(
-      "listMemberGroups",
-      "listMemberGroups(address):((bytes32,string)[])",
-      [ethereum.Value.fromAddress(member)]
-    );
+export class CreateBetCall__Outputs {
+  _call: CreateBetCall;
 
-    return result[0].toTupleArray<
-      Beer4Crypto__listMemberGroupsResultValue0Struct
-    >();
-  }
-
-  try_listMemberGroups(
-    member: Address
-  ): ethereum.CallResult<
-    Array<Beer4Crypto__listMemberGroupsResultValue0Struct>
-  > {
-    let result = super.tryCall(
-      "listMemberGroups",
-      "listMemberGroups(address):((bytes32,string)[])",
-      [ethereum.Value.fromAddress(member)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      value[0].toTupleArray<Beer4Crypto__listMemberGroupsResultValue0Struct>()
-    );
+  constructor(call: CreateBetCall) {
+    this._call = call;
   }
 }
 

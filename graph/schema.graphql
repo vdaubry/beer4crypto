@@ -1,10 +1,10 @@
 type BetCreated @entity(immutable: true) {
   id: Bytes!
   creator: Bytes! # address
-  pickWinnerDate: BigInt! # uint256
-  minDeposit: BigInt! # uint256
   groupId: Bytes! # bytes32
-  maxBetDateInterval: BigInt! # uint256
+  amountDeposited: BigInt! # uint256
+  predictedEthPrice: BigInt! # uint256
+  eventId: Bytes! # bytes32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -12,6 +12,7 @@ type BetCreated @entity(immutable: true) {
 
 type EventCreated @entity(immutable: true) {
   id: Bytes!
+  eventId: Bytes! # bytes32
   creator: Bytes! # address
   eventDate: BigInt! # uint256
   minDeposit: BigInt! # uint256

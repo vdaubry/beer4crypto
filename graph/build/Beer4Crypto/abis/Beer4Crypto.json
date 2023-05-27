@@ -1,331 +1,324 @@
 [
   {
+    "type": "event",
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "pickWinnerDate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "minDeposit",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "maxBetDateInterval",
-        "type": "uint256"
-      }
-    ],
     "name": "BetCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
+        "type": "address",
         "name": "creator",
-        "type": "address"
+        "indexed": false
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "eventDate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "minDeposit",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
+        "type": "bytes32",
         "name": "groupId",
-        "type": "bytes32"
+        "indexed": false
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "maxBetDate",
-        "type": "uint256"
+        "type": "uint256",
+        "name": "amountDeposited",
+        "indexed": false
+      },
+      {
+        "type": "uint256",
+        "name": "predictedEthPrice",
+        "indexed": false
+      },
+      {
+        "type": "bytes32",
+        "name": "eventId",
+        "indexed": false
       }
-    ],
+    ]
+  },
+  {
+    "type": "event",
+    "anonymous": false,
     "name": "EventCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
+        "type": "bytes32",
+        "name": "eventId",
+        "indexed": false
       },
       {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "id",
-        "type": "bytes32"
-      }
-    ],
-    "name": "GroupCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
+        "type": "address",
+        "name": "creator",
+        "indexed": false
       },
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "memberAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "nickname",
-        "type": "string"
-      }
-    ],
-    "name": "MemberInvited",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
+        "type": "uint256",
         "name": "eventDate",
-        "type": "uint256"
+        "indexed": false
       },
       {
-        "internalType": "uint256",
+        "type": "uint256",
         "name": "minDeposit",
-        "type": "uint256"
+        "indexed": false
       },
       {
-        "internalType": "bytes32",
+        "type": "bytes32",
         "name": "groupId",
-        "type": "bytes32"
+        "indexed": false
       },
       {
-        "internalType": "uint256",
+        "type": "uint256",
         "name": "maxBetDate",
-        "type": "uint256"
+        "indexed": false
       }
-    ],
-    "name": "createEvent",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    ]
   },
   {
+    "type": "event",
+    "anonymous": false,
+    "name": "GroupCreated",
     "inputs": [
       {
-        "internalType": "string",
-        "name": "groupName",
-        "type": "string"
+        "type": "string",
+        "name": "name",
+        "indexed": false
       },
       {
-        "internalType": "string",
-        "name": "nickname",
-        "type": "string"
+        "type": "bytes32",
+        "name": "id",
+        "indexed": false
       }
-    ],
-    "name": "createGroup",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    ]
   },
   {
+    "type": "event",
+    "anonymous": false,
+    "name": "MemberInvited",
     "inputs": [
       {
-        "internalType": "address",
+        "type": "bytes32",
+        "name": "groupId",
+        "indexed": false
+      },
+      {
+        "type": "address",
         "name": "memberAddress",
-        "type": "address"
+        "indexed": false
       },
       {
-        "internalType": "string",
-        "name": "memberNickname",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
+        "type": "string",
+        "name": "nickname",
+        "indexed": false
       }
-    ],
-    "name": "inviteMember",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    ]
   },
   {
+    "type": "function",
+    "name": "createBet",
+    "constant": false,
+    "stateMutability": "payable",
+    "payable": true,
+    "gas": 29000000,
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
+        "type": "bytes32",
+        "name": "eventId"
       },
       {
-        "internalType": "address",
-        "name": "member",
-        "type": "address"
+        "type": "uint256",
+        "name": "predictedEthPrice"
       }
     ],
-    "name": "isMember",
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "createEvent",
+    "constant": false,
+    "payable": false,
+    "gas": 29000000,
+    "inputs": [
+      {
+        "type": "uint256",
+        "name": "eventDate"
+      },
+      {
+        "type": "uint256",
+        "name": "minDeposit"
+      },
+      {
+        "type": "bytes32",
+        "name": "groupId"
+      },
+      {
+        "type": "uint256",
+        "name": "maxBetDate"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "createGroup",
+    "constant": false,
+    "payable": false,
+    "gas": 29000000,
+    "inputs": [
+      {
+        "type": "string",
+        "name": "groupName"
+      },
+      {
+        "type": "string",
+        "name": "nickname"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getBet",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "gas": 29000000,
+    "inputs": [
+      {
+        "type": "bytes32",
+        "name": "eventId"
+      },
+      {
+        "type": "address",
+        "name": "memberAddress"
+      }
+    ],
     "outputs": [
       {
-        "internalType": "bool",
-        "name": "",
+        "type": "tuple",
+        "components": [
+          {
+            "type": "address",
+            "name": "creator"
+          },
+          {
+            "type": "uint256",
+            "name": "betDate"
+          },
+          {
+            "type": "uint256",
+            "name": "predictedEthPrice"
+          },
+          {
+            "type": "uint256",
+            "name": "amountDeposited"
+          },
+          {
+            "type": "uint8",
+            "name": "status"
+          },
+          {
+            "type": "bytes32",
+            "name": "eventId"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getGroupEvent",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "gas": 29000000,
+    "inputs": [
+      {
+        "type": "bytes32",
+        "name": "groupId"
+      },
+      {
+        "type": "uint256",
+        "name": "eventDate"
+      }
+    ],
+    "outputs": [
+      {
+        "type": "tuple",
+        "components": [
+          {
+            "type": "bytes32",
+            "name": "id"
+          },
+          {
+            "type": "address",
+            "name": "creator"
+          },
+          {
+            "type": "uint256",
+            "name": "eventDate"
+          },
+          {
+            "type": "uint256",
+            "name": "minDeposit"
+          },
+          {
+            "type": "bool",
+            "name": "ended"
+          },
+          {
+            "type": "bytes32",
+            "name": "groupId"
+          },
+          {
+            "type": "uint256",
+            "name": "maxBetDate"
+          },
+          {
+            "type": "uint256",
+            "name": "actualEthPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "inviteMember",
+    "constant": false,
+    "payable": false,
+    "gas": 29000000,
+    "inputs": [
+      {
+        "type": "address",
+        "name": "memberAddress"
+      },
+      {
+        "type": "string",
+        "name": "memberNickname"
+      },
+      {
+        "type": "bytes32",
+        "name": "groupId"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "isMember",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "gas": 29000000,
+    "inputs": [
+      {
+        "type": "bytes32",
+        "name": "groupId"
+      },
+      {
+        "type": "address",
+        "name": "member"
+      }
+    ],
+    "outputs": [
+      {
         "type": "bool"
       }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "listGroupEvents",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "creator",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "eventDate",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "minDeposit",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bool",
-            "name": "ended",
-            "type": "bool"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "groupId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "uint256",
-            "name": "maxBetDate",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "actualEthPrice",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Beer4Crypto.Event[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "id",
-        "type": "bytes32"
-      }
-    ],
-    "name": "listGroupMembers",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "memberAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "nickname",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct Beer4Crypto.Member[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "member",
-        "type": "address"
-      }
-    ],
-    "name": "listMemberGroups",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "bytes32",
-            "name": "id",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct Beer4Crypto.Group[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    ]
   }
 ]

@@ -6,24 +6,36 @@ import { useState, useEffect } from "react"
 import { contractAddresses, contractAbi } from "@/constants/index"
 import { useNetwork, useAccount, useContractRead } from "wagmi"
 import { formatDate, formatAddress } from "@/utils/format"
+import { GET_GROUP_EVENTS } from "@/constants/subgraphQueries"
+import { useQuery } from "@apollo/client"
 
-const ListGroupEvents = (groupId) => {
-  const { chain } = useNetwork()
-  const { address: account } = useAccount()
-
-  let contractAddress
-
-  if (chain && contractAddresses[chain.id]) {
-    const chainId = chain.id
-    contractAddress = contractAddresses[chainId]["contract"]
-  }
-
-  const { data: eventList } = useContractRead({
-    address: contractAddress,
-    abi: contractAbi,
-    functionName: "listGroupEvents",
-    args: [groupId.groupId],
+const ListGroupEvents = (params) => {
+  const {
+    loading,
+    error,
+    data: groupEvents,
+  } = useQuery(GET_GROUP_EVENTS, {
+    variables: { groupId: params.groupId },
   })
+
+  console.log("groupId", params.groupId)
+
+  // const { chain } = useNetwork()
+  // const { address: account } = useAccount()
+
+  // let contractAddress
+
+  // if (chain && contractAddresses[chain.id]) {
+  //   const chainId = chain.id
+  //   contractAddress = contractAddresses[chainId]["contract"]
+  // }
+
+  // const { data: eventList } = useContractRead({
+  //   address: contractAddress,
+  //   abi: contractAbi,
+  //   functionName: "listGroupEvents",
+  //   args: [groupId.groupId],
+  // })
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">
@@ -50,7 +62,7 @@ const ListGroupEvents = (groupId) => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {eventList?.map((event, i) => (
+                      {groupEvents?.eventCreateds?.map((event, i) => (
                         <tr key={i}>
                           <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
                             <Link href={`/events/${event.eventDate}`}>

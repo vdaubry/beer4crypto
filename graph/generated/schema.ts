@@ -67,32 +67,6 @@ export class BetCreated extends Entity {
     this.set("creator", Value.fromBytes(value));
   }
 
-  get pickWinnerDate(): BigInt {
-    let value = this.get("pickWinnerDate");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set pickWinnerDate(value: BigInt) {
-    this.set("pickWinnerDate", Value.fromBigInt(value));
-  }
-
-  get minDeposit(): BigInt {
-    let value = this.get("minDeposit");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set minDeposit(value: BigInt) {
-    this.set("minDeposit", Value.fromBigInt(value));
-  }
-
   get groupId(): Bytes {
     let value = this.get("groupId");
     if (!value || value.kind == ValueKind.NULL) {
@@ -106,8 +80,8 @@ export class BetCreated extends Entity {
     this.set("groupId", Value.fromBytes(value));
   }
 
-  get maxBetDateInterval(): BigInt {
-    let value = this.get("maxBetDateInterval");
+  get amountDeposited(): BigInt {
+    let value = this.get("amountDeposited");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -115,8 +89,34 @@ export class BetCreated extends Entity {
     }
   }
 
-  set maxBetDateInterval(value: BigInt) {
-    this.set("maxBetDateInterval", Value.fromBigInt(value));
+  set amountDeposited(value: BigInt) {
+    this.set("amountDeposited", Value.fromBigInt(value));
+  }
+
+  get predictedEthPrice(): BigInt {
+    let value = this.get("predictedEthPrice");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set predictedEthPrice(value: BigInt) {
+    this.set("predictedEthPrice", Value.fromBigInt(value));
+  }
+
+  get eventId(): Bytes {
+    let value = this.get("eventId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set eventId(value: Bytes) {
+    this.set("eventId", Value.fromBytes(value));
   }
 
   get blockNumber(): BigInt {
@@ -200,6 +200,19 @@ export class EventCreated extends Entity {
 
   set id(value: Bytes) {
     this.set("id", Value.fromBytes(value));
+  }
+
+  get eventId(): Bytes {
+    let value = this.get("eventId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set eventId(value: Bytes) {
+    this.set("eventId", Value.fromBytes(value));
   }
 
   get creator(): Bytes {
@@ -361,19 +374,6 @@ export class GroupCreated extends Entity {
 
   set name(value: string) {
     this.set("name", Value.fromString(value));
-  }
-
-  get Beer4Crypto_id(): Bytes {
-    let value = this.get("Beer4Crypto_id");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set Beer4Crypto_id(value: Bytes) {
-    this.set("Beer4Crypto_id", Value.fromBytes(value));
   }
 
   get blockNumber(): BigInt {

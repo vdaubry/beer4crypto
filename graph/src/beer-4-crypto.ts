@@ -13,20 +13,26 @@ import {
 } from "../generated/schema"
 
 export function handleBetCreated(event: BetCreatedEvent): void {
-  let entity = new BetCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.creator = event.params.creator
-  entity.pickWinnerDate = event.params.pickWinnerDate
-  entity.minDeposit = event.params.minDeposit
-  entity.groupId = event.params.groupId
-  entity.maxBetDateInterval = event.params.maxBetDateInterval
+  let betCreatedId = getBetCreatedIdFromParams(event.params.eventId, event.params.creator)
+  let betCreated = BetCreated.load(betCreatedId)
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if(!betCreated) {
+    betCreated = new BetCreated(
+      betCreatedId
+    ) 
+  }
 
-  entity.save()
+  betCreated.creator = event.params.creator
+  betCreated.groupId = event.params.groupId
+  betCreated.amountDeposited = event.params.amountDeposited
+  betCreated.predictedEthPrice = event.params.predictedEthPrice
+  betCreated.eventId = event.params.eventId
+
+  betCreated.blockNumber = event.block.number
+  betCreated.blockTimestamp = event.block.timestamp
+  betCreated.transactionHash = event.transaction.hash
+
+  betCreated.save()
 }
 
 export function handleEventCreated(event: EventCreatedEvent): void {
@@ -96,4 +102,8 @@ function getMemberInvitedEventIdFromParams(groupId: Bytes, memberAddress: Addres
 
 function getEventCreatedIdFromParams(groupId: Bytes, eventDate: BigInt): Bytes {
   return Bytes.fromHexString(groupId.toHexString() + eventDate.toHexString())
+}
+
+function getBetCreatedIdFromParams(eventId: Bytes, memberAddress: Address): Bytes {
+  return Bytes.fromHexString(eventId.toHexString() + memberAddress.toHexString())
 }
