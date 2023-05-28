@@ -1,3 +1,4 @@
+import { log } from '@graphprotocol/graph-ts'
 import { BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import {
   BetCreated as BetCreatedEvent,
@@ -13,6 +14,7 @@ import {
 } from "../generated/schema"
 
 export function handleBetCreated(event: BetCreatedEvent): void {
+  log.info('Index new Bet for event: {}', [event.params.eventId.toHexString()])
   let betCreatedId = getBetCreatedIdFromParams(event.params.eventId, event.params.creator)
   let betCreated = BetCreated.load(betCreatedId)
 
@@ -97,9 +99,7 @@ export function handleMemberInvited(event: MemberInvitedEvent): void {
 }
 
 function getMemberInvitedEventIdFromParams(groupId: Bytes, memberAddress: Address): Bytes {
-  let memberInvitedId = groupId.concat(memberAddress as Bytes)
-  console.log("memberInvitedId: "+memberInvitedId.toHexString())
-  return memberInvitedId
+  return groupId.concat(memberAddress as Bytes)
 }
 
 function getBetCreatedIdFromParams(eventId: Bytes, memberAddress: Address): Bytes {

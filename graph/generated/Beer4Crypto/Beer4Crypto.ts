@@ -160,6 +160,16 @@ export class Beer4Crypto__getBetResultValue0Struct extends ethereum.Tuple {
   }
 }
 
+export class Beer4Crypto__getGroupResultValue0Struct extends ethereum.Tuple {
+  get id(): Bytes {
+    return this[0].toBytes();
+  }
+
+  get name(): string {
+    return this[1].toString();
+  }
+}
+
 export class Beer4Crypto__getGroupEventResultValue0Struct extends ethereum.Tuple {
   get id(): Bytes {
     return this[0].toBytes();
@@ -235,6 +245,35 @@ export class Beer4Crypto extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(
       changetype<Beer4Crypto__getBetResultValue0Struct>(value[0].toTuple())
+    );
+  }
+
+  getGroup(groupId: Bytes): Beer4Crypto__getGroupResultValue0Struct {
+    let result = super.call(
+      "getGroup",
+      "getGroup(bytes32):((bytes32,string))",
+      [ethereum.Value.fromFixedBytes(groupId)]
+    );
+
+    return changetype<Beer4Crypto__getGroupResultValue0Struct>(
+      result[0].toTuple()
+    );
+  }
+
+  try_getGroup(
+    groupId: Bytes
+  ): ethereum.CallResult<Beer4Crypto__getGroupResultValue0Struct> {
+    let result = super.tryCall(
+      "getGroup",
+      "getGroup(bytes32):((bytes32,string))",
+      [ethereum.Value.fromFixedBytes(groupId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      changetype<Beer4Crypto__getGroupResultValue0Struct>(value[0].toTuple())
     );
   }
 
