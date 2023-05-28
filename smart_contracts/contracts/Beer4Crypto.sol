@@ -60,10 +60,11 @@ contract Beer4Crypto {
     );
     event BetCreated(
         address creator,
-        bytes32 groupId,
-        uint256 amountDeposited,
+        uint256 betDate,
         uint256 predictedEthPrice,
-        bytes32 eventId
+        uint256 amountDeposited,
+        bytes32 eventId,
+        bytes32 groupId
     );
 
     modifier onlyMember(bytes32 groupId) {
@@ -155,10 +156,11 @@ contract Beer4Crypto {
 
         emit BetCreated(
             msg.sender,
-            groupEvent.groupId,
-            msg.value,
+            block.timestamp,
             predictedEthPrice,
-            groupEvent.id
+            msg.value,
+            groupEvent.id,
+            groupEvent.groupId
         );
     }
 

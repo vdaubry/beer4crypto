@@ -87,7 +87,7 @@ export function handleBetCreated(event: BetCreatedEvent): void {
   }
 
   bet.creator = getMemberIdFromParams(event.params.groupId, event.params.creator)
-  bet.group = event.params.groupId
+  bet.betDate = event.params.betDate
   bet.amountDeposited = event.params.amountDeposited
   bet.predictedEthPrice = event.params.predictedEthPrice
   bet.groupEvent = event.params.eventId

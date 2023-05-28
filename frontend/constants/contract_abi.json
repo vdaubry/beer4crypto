@@ -10,14 +10,8 @@
       },
       {
         "indexed": false,
-        "internalType": "bytes32",
-        "name": "groupId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "amountDeposited",
+        "name": "betDate",
         "type": "uint256"
       },
       {
@@ -28,8 +22,20 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "amountDeposited",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "bytes32",
         "name": "eventId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "groupId",
         "type": "bytes32"
       }
     ],

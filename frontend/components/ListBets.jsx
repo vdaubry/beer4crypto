@@ -2,17 +2,23 @@
 
 import React from "react"
 import Link from "next/link"
-import { formatDate, formatAddress } from "@/utils/format"
-import { GET_GROUP_EVENTS } from "@/constants/subgraphQueries"
+import { useState } from "react"
+import { contractAddresses, contractAbi } from "@/constants/index"
+import { useNetwork, useAccount, useContractRead } from "wagmi"
+import { GET_BETS } from "@/constants/subgraphQueries"
 import { useQuery } from "@apollo/client"
+import { formatDate, truncatedAmount } from "@/utils/format"
 
-const ListGroupEvents = (params) => {
+const ListBets = (params) => {
+  const { chain } = useNetwork()
+  const { address: account } = useAccount()
+
   const {
     loading,
     error,
     data: data,
-  } = useQuery(GET_GROUP_EVENTS, {
-    variables: { groupId: params.groupId },
+  } = useQuery(GET_BETS, {
+    variables: { eventId: params.eventId },
   })
 
   if (loading) return null
@@ -20,10 +26,10 @@ const ListGroupEvents = (params) => {
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">
-      <div className="max-w-2xl w-full my-4 ">
+      <div className="max-w-md w-full my-4 ">
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
           <div className="mb-4">
-            <h2 className="block text-gray-700 text-2xl font-bold mb-2">Events for your group</h2>
+            <h2 className="block text-gray-700 text-2xl font-bold mb-2">Event bets</h2>
             <div className="relative bg-slate-50 rounded-xl overflow-hidden">
               <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))]"></div>
               <div className="relative rounded-xl overflow-auto">
@@ -32,32 +38,30 @@ const ListGroupEvents = (params) => {
                     <thead>
                       <tr>
                         <th className="border-b font-medium p-4 pl-8 pt-0 pb-3 text-slate-400 text-left">
-                          eventDate
+                          Name
                         </th>
                         <th className="border-b font-medium p-4 pl-8 pt-0 pb-3 text-slate-400 text-left">
-                          creator
+                          Date
                         </th>
                         <th className="border-b font-medium p-4 pl-8 pt-0 pb-3 text-slate-400 text-left">
-                          ended
+                          Amount deposited
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {data.groups
-                        .map((group) => group.events)
+                      {data.groupEvents
+                        .map((groupEvent) => groupEvent.bets)
                         .flat()
-                        .map((event, i) => (
+                        .map((bet, i) => (
                           <tr key={i}>
                             <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                              <Link href={`/events/${event.id}`}>
-                                {formatDate(event.eventDate)}
-                              </Link>
+                              {bet.creator.nickname}
                             </td>
                             <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                              {formatAddress(event.creator.memberAddress)}
+                              {formatDate(bet.betDate * 1000)}
                             </td>
                             <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                              {event.ended.toString()}
+                              {bet.amountDeposited}
                             </td>
                           </tr>
                         ))}
@@ -74,4 +78,4 @@ const ListGroupEvents = (params) => {
   )
 }
 
-export default ListGroupEvents
+export default ListBets

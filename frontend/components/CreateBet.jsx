@@ -30,7 +30,7 @@ const CreateBet = (params) => {
   const { config } = usePrepareContractWrite({
     address: contractAddress,
     abi: contractAbi,
-    functionName: "createEvent",
+    functionName: "createBet",
     args: [eventDate.getTime(), minDeposit.toString(), params.eventId, maxBetDate.getTime()],
   })
 

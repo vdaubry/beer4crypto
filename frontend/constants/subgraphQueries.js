@@ -40,15 +40,22 @@ const GET_GROUP_MEMBERS = gql`
   }
 `
 
-const GET_MEMBER_INVITEDS = gql`
-  query GetMemberInviteds($memberAddress: String!) {
-    memberInviteds(where: { memberAddress: $memberAddress }) {
-      id
-      groupId
-      memberAddress
-      nickname
+const GET_BETS = gql`
+  query GetBets($eventId: Bytes!) {
+    groupEvents(where: { id: $eventId }) {
+      bets {
+        id
+        predictedEthPrice
+        betDate
+        amountDeposited
+        creator {
+          id
+          memberAddress
+          nickname
+        }
+      }
     }
   }
 `
 
-export { GET_GROUPS_BY_MEMBER, GET_GROUP_EVENTS, GET_MEMBER_INVITEDS, GET_GROUP_MEMBERS }
+export { GET_GROUPS_BY_MEMBER, GET_GROUP_EVENTS, GET_GROUP_MEMBERS, GET_BETS }
