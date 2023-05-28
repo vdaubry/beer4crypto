@@ -3,7 +3,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { contractAddresses, contractAbi } from "@/constants/index"
 import { useNetwork, useAccount, useContractRead } from "wagmi"
-import { GET_MEMBER_INVITEDS, GET_GROUPS } from "@/constants/subgraphQueries"
+import { GET_GROUPS_BY_MEMBER } from "@/constants/subgraphQueries"
 import { useQuery } from "@apollo/client"
 
 const ListGroups = () => {
@@ -13,25 +13,13 @@ const ListGroups = () => {
   const {
     loading,
     error,
-    data: memberInviteds,
-  } = useQuery(GET_MEMBER_INVITEDS, {
-    variables: { memberAddress: account },
-  })
-
-  const groupIds = memberInviteds?.memberInviteds?.map((memberInvited) => memberInvited.groupId)
-  const {
-    loading: loading2,
-    error: error2,
     data: groups,
-  } = useQuery(GET_GROUPS, {
-    variables: {
-      ids: groupIds,
-      skip: !groupIds, // skip this query if groupIds is not defined
-    },
+  } = useQuery(GET_GROUPS_BY_MEMBER, {
+    variables: { address: account },
   })
 
-  if (loading || loading2) return null
-  if (error || error2) return `Error! ${error} , ${error2}`
+  if (loading) return null
+  if (error) return `Error! ${error}`
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">
@@ -52,13 +40,15 @@ const ListGroups = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {groups.groupCreateds?.map((group, i) => (
-                        <tr key={i}>
-                          <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                            <Link href={`/groups/${group.id}`}>{group.name}</Link>
-                          </td>
-                        </tr>
-                      ))}
+                      {groups.members
+                        .map((member) => member.group)
+                        .map((group, i) => (
+                          <tr key={i}>
+                            <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
+                              <Link href={`/groups/${group.id}`}>{group.name}</Link>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>

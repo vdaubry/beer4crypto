@@ -22,11 +22,13 @@ const GET_GROUP_MEMBERS = gql`
   }
 `
 
-const GET_GROUPS = gql`
-  query GetGroups($ids: [Bytes!]!) {
-    groupCreateds(where: { id_in: $ids }) {
-      id
-      name
+const GET_GROUPS_BY_MEMBER = gql`
+  query GetGroupsByMember($address: Bytes!) {
+    members(where: { memberAddress: $address }) {
+      group {
+        id
+        name
+      }
     }
   }
 `
@@ -45,4 +47,4 @@ const GET_GROUP_EVENTS = gql`
   }
 `
 
-export { GET_MEMBER_INVITEDS, GET_GROUPS, GET_GROUP_MEMBERS, GET_GROUP_EVENTS }
+export { GET_GROUPS_BY_MEMBER, GET_MEMBER_INVITEDS, GET_GROUP_MEMBERS, GET_GROUP_EVENTS }
