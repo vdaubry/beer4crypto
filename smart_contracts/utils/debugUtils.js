@@ -20,31 +20,15 @@ const inviteMember = async (deployer, account, nickname, id) => {
     await tx1.wait()
 }
 
-const listMemberGroups = async (account) => {
-    console.log(`Account: ${account}`)
+const getGroup = async (groupId) => {
     const { deployer } = await getNamedAccounts()
     const crypto4beer = await ethers.getContract("Beer4Crypto", deployer)
 
-    const groupList = await crypto4beer.listMemberGroups(account)
-    console.log(`Group List count: ${groupList.length}`)
-    groupList.forEach((group) => {
-        console.log(`Group: ${group}`)
-    })
+    const group = await crypto4beer.getGroup(groupId)
+    console.log(`Group: ${group}`)
 }
 
-const listGroupMembers = async (id) => {
-    console.log(`group_id: ${id}`)
-    const { deployer } = await getNamedAccounts()
-    console.log(`deployer: ${deployer}`)
-    const crypto4beer = await ethers.getContract("Beer4Crypto", deployer)
-
-    const groupList = await crypto4beer.listGroupMembers(id)
-    groupList.forEach((member) => {
-        console.log(`member: ${member}`)
-    })
-}
-
-const CreateEvent = async (deployer, groupId, eventDate, minDeposit, maxBetDate) => {
+const createGroupEvent = async (deployer, groupId, eventDate, minDeposit, maxBetDate) => {
     console.log(
         `CreateEvent called with: 
             deployer: ${deployer}, 
@@ -56,13 +40,28 @@ const CreateEvent = async (deployer, groupId, eventDate, minDeposit, maxBetDate)
     )
     const crypto4beer = await ethers.getContract("Beer4Crypto", deployer)
 
-    const tx1 = await crypto4beer.createEvent(groupId, eventDate, minDeposit, maxBetDate)
+    const tx1 = await crypto4beer.createGroupEvent(eventDate, minDeposit, groupId, maxBetDate)
+    await tx1.wait()
+}
+
+const createBet = async (better, eventId, predictedEthPrice, amount) => {
+    console.log(
+        `CreateBet called with:
+            deployer: ${deployer},
+            eventId: ${eventId},
+            predictedEthPrice: ${predictedEthPrice},
+        `
+    )
+    const crypto4beer = await ethers.getContract("Beer4Crypto", better)
+
+    const tx1 = await crypto4beer.createBet(eventId, predictedEthPrice, { value: amount })
     await tx1.wait()
 }
 
 module.exports = {
     createGroup,
     inviteMember,
-    listMemberGroups,
-    listGroupMembers,
+    getGroup,
+    createGroupEvent,
+    createBet,
 }

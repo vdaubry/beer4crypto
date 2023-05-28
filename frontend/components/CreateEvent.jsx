@@ -54,7 +54,7 @@ const CreateEvent = (params) => {
   const { config } = usePrepareContractWrite({
     address: contractAddress,
     abi: contractAbi,
-    functionName: "createEvent",
+    functionName: "createGroupEvent",
     args: [eventDate.getTime(), minDeposit.toString(), params.groupId, maxBetDate.getTime()],
   })
 
@@ -68,7 +68,7 @@ const CreateEvent = (params) => {
   useContractEvent({
     address: contractAddress,
     abi: contractAbi,
-    eventName: "EventCreated",
+    eventName: "GroupEventCreated",
     listener(log) {},
   })
 

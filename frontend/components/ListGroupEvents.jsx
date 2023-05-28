@@ -18,8 +18,6 @@ const ListGroupEvents = (params) => {
     variables: { groupId: params.groupId },
   })
 
-  console.log("groupId", params.groupId)
-
   // const { chain } = useNetwork()
   // const { address: account } = useAccount()
 
@@ -62,7 +60,7 @@ const ListGroupEvents = (params) => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {groupEvents?.eventCreateds?.map((event, i) => (
+                      {groupEvents?.groupEventCreateds?.map((event, i) => (
                         <tr key={i}>
                           <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
                             <Link href={`/events/${event.eventDate}`}>

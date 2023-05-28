@@ -32,12 +32,13 @@ const GET_GROUPS = gql`
 `
 
 const GET_GROUP_EVENTS = gql`
-  query GetEventCreateds($groupId: Bytes!) {
-    eventCreateds(where: { groupId: $groupId }) {
+  query GetGroupEventCreateds($groupId: Bytes!) {
+    groupEventCreateds(where: { groupId: $groupId }) {
       id
       creator
       eventDate
       minDeposit
+      ended
       groupId
       maxBetDate
     }

@@ -255,6 +255,37 @@
         "internalType": "bytes32",
         "name": "groupId",
         "type": "bytes32"
+      }
+    ],
+    "name": "getGroup",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "id",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct Beer4Crypto.Group",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "groupId",
+        "type": "bytes32"
       },
       {
         "internalType": "uint256",

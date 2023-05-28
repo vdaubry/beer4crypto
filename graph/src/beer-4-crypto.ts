@@ -97,11 +97,9 @@ export function handleMemberInvited(event: MemberInvitedEvent): void {
 }
 
 function getMemberInvitedEventIdFromParams(groupId: Bytes, memberAddress: Address): Bytes {
-  return groupId.concat(memberAddress as Bytes)
-}
-
-function getEventCreatedIdFromParams(groupId: Bytes, eventDate: BigInt): Bytes {
-  return Bytes.fromHexString(groupId.toHexString() + eventDate.toHexString())
+  let memberInvitedId = groupId.concat(memberAddress as Bytes)
+  console.log("memberInvitedId: "+memberInvitedId.toHexString())
+  return memberInvitedId
 }
 
 function getBetCreatedIdFromParams(eventId: Bytes, memberAddress: Address): Bytes {

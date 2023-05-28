@@ -177,4 +177,8 @@ contract Beer4Crypto {
     function getBet(bytes32 eventId, address memberAddress) public view returns (Bet memory) {
         return betToEvents[eventId][memberAddress];
     }
+
+    function getGroup(bytes32 groupId) public view returns (Group memory) {
+        return groups[groupId];
+    }
 }
