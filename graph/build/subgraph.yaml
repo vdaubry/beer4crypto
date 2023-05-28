@@ -14,7 +14,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - BetCreated
-        - EventCreated
+        - GroupEventCreated
         - GroupCreated
         - MemberInvited
       abis:
@@ -23,8 +23,8 @@ dataSources:
       eventHandlers:
         - event: BetCreated(address,bytes32,uint256,uint256,bytes32)
           handler: handleBetCreated
-        - event: EventCreated(bytes32,address,uint256,uint256,bytes32,uint256)
-          handler: handleEventCreated
+        - event: GroupEventCreated(bytes32,address,uint256,uint256,bool,bytes32,uint256)
+          handler: handleGroupEventCreated
         - event: GroupCreated(string,bytes32)
           handler: handleGroupCreated
         - event: MemberInvited(bytes32,address,string)

@@ -10,12 +10,12 @@ type BetCreated @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type EventCreated @entity(immutable: true) {
+type GroupEventCreated @entity(immutable: true) {
   id: Bytes!
-  eventId: Bytes! # bytes32
   creator: Bytes! # address
   eventDate: BigInt! # uint256
   minDeposit: BigInt! # uint256
+  ended: Boolean! # bool
   groupId: Bytes! # bytes32
   maxBetDate: BigInt! # uint256
   blockNumber: BigInt!

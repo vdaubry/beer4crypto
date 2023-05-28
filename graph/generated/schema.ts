@@ -159,7 +159,7 @@ export class BetCreated extends Entity {
   }
 }
 
-export class EventCreated extends Entity {
+export class GroupEventCreated extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -167,25 +167,25 @@ export class EventCreated extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save EventCreated entity without an ID");
+    assert(id != null, "Cannot save GroupEventCreated entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type EventCreated must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type GroupEventCreated must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("EventCreated", id.toBytes().toHexString(), this);
+      store.set("GroupEventCreated", id.toBytes().toHexString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): EventCreated | null {
-    return changetype<EventCreated | null>(
-      store.get_in_block("EventCreated", id.toHexString())
+  static loadInBlock(id: Bytes): GroupEventCreated | null {
+    return changetype<GroupEventCreated | null>(
+      store.get_in_block("GroupEventCreated", id.toHexString())
     );
   }
 
-  static load(id: Bytes): EventCreated | null {
-    return changetype<EventCreated | null>(
-      store.get("EventCreated", id.toHexString())
+  static load(id: Bytes): GroupEventCreated | null {
+    return changetype<GroupEventCreated | null>(
+      store.get("GroupEventCreated", id.toHexString())
     );
   }
 
@@ -200,19 +200,6 @@ export class EventCreated extends Entity {
 
   set id(value: Bytes) {
     this.set("id", Value.fromBytes(value));
-  }
-
-  get eventId(): Bytes {
-    let value = this.get("eventId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set eventId(value: Bytes) {
-    this.set("eventId", Value.fromBytes(value));
   }
 
   get creator(): Bytes {
@@ -252,6 +239,19 @@ export class EventCreated extends Entity {
 
   set minDeposit(value: BigInt) {
     this.set("minDeposit", Value.fromBigInt(value));
+  }
+
+  get ended(): boolean {
+    let value = this.get("ended");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set ended(value: boolean) {
+    this.set("ended", Value.fromBoolean(value));
   }
 
   get groupId(): Bytes {

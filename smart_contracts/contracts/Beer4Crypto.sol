@@ -49,11 +49,12 @@ contract Beer4Crypto {
 
     event GroupCreated(string name, bytes32 id);
     event MemberInvited(bytes32 groupId, address memberAddress, string nickname);
-    event EventCreated(
-        bytes32 eventId,
+    event GroupEventCreated(
+        bytes32 id,
         address creator,
         uint256 eventDate,
         uint256 minDeposit,
+        bool ended,
         bytes32 groupId,
         uint256 maxBetDate
     );
@@ -84,7 +85,7 @@ contract Beer4Crypto {
         emit MemberInvited(groupId, msg.sender, nickname);
     }
 
-    function createEvent(
+    function createGroupEvent(
         uint256 eventDate,
         uint256 minDeposit,
         bytes32 groupId,
@@ -95,13 +96,13 @@ contract Beer4Crypto {
         require(eventToGroups[groupId][eventDate] == 0, "Event already exists");
 
         bytes32 eventId = keccak256(abi.encodePacked(groupId, eventDate));
-
+        bool ended = false;
         GroupEvent memory groupEvent = GroupEvent(
             eventId,
             msg.sender,
             eventDate,
             minDeposit,
-            false,
+            ended,
             groupId,
             maxBetDate,
             0
@@ -109,7 +110,15 @@ contract Beer4Crypto {
         groupEvents[eventId] = groupEvent;
         eventToGroups[groupId][eventDate] = eventId;
 
-        emit EventCreated(eventId, msg.sender, eventDate, minDeposit, groupId, maxBetDate);
+        emit GroupEventCreated(
+            eventId,
+            msg.sender,
+            eventDate,
+            minDeposit,
+            ended,
+            groupId,
+            maxBetDate
+        );
     }
 
     function inviteMember(

@@ -41,8 +41,27 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
         "internalType": "bytes32",
-        "name": "eventId",
+        "name": "id",
+        "type": "bytes32"
+      }
+    ],
+    "name": "GroupCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "id",
         "type": "bytes32"
       },
       {
@@ -65,6 +84,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "ended",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "bytes32",
         "name": "groupId",
         "type": "bytes32"
@@ -76,26 +101,7 @@
         "type": "uint256"
       }
     ],
-    "name": "EventCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "id",
-        "type": "bytes32"
-      }
-    ],
-    "name": "GroupCreated",
+    "name": "GroupEventCreated",
     "type": "event"
   },
   {
@@ -144,6 +150,24 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "groupName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "nickname",
+        "type": "string"
+      }
+    ],
+    "name": "createGroup",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "eventDate",
         "type": "uint256"
@@ -164,25 +188,7 @@
         "type": "uint256"
       }
     ],
-    "name": "createEvent",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "groupName",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "nickname",
-        "type": "string"
-      }
-    ],
-    "name": "createGroup",
+    "name": "createGroupEvent",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

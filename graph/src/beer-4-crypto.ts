@@ -1,13 +1,13 @@
 import { BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import {
   BetCreated as BetCreatedEvent,
-  EventCreated as EventCreatedEvent,
+  GroupEventCreated as GroupEventCreatedEvent,
   GroupCreated as GroupCreatedEvent,
   MemberInvited as MemberInvitedEvent
 } from "../generated/Beer4Crypto/Beer4Crypto"
 import {
   BetCreated,
-  EventCreated,
+  GroupEventCreated,
   GroupCreated,
   MemberInvited
 } from "../generated/schema"
@@ -35,27 +35,27 @@ export function handleBetCreated(event: BetCreatedEvent): void {
   betCreated.save()
 }
 
-export function handleEventCreated(event: EventCreatedEvent): void {
-  let eventCreatedId = getEventCreatedIdFromParams(event.params.groupId, event.params.eventDate)
-  let eventCreated = EventCreated.load(eventCreatedId)
+export function handleGroupEventCreated(event: GroupEventCreatedEvent): void {
+  let groupEventCreated = GroupEventCreated.load(event.params.id)
 
-  if(!eventCreated) {
-    eventCreated = new EventCreated(
-      eventCreatedId
+  if(!groupEventCreated) {
+    groupEventCreated = new GroupEventCreated(
+      event.params.id
     ) 
   }
   
-  eventCreated.creator = event.params.creator
-  eventCreated.eventDate = event.params.eventDate
-  eventCreated.minDeposit = event.params.minDeposit
-  eventCreated.groupId = event.params.groupId
-  eventCreated.maxBetDate = event.params.maxBetDate
+  groupEventCreated.creator = event.params.creator
+  groupEventCreated.eventDate = event.params.eventDate
+  groupEventCreated.minDeposit = event.params.minDeposit
+  groupEventCreated.ended = event.params.ended
+  groupEventCreated.groupId = event.params.groupId
+  groupEventCreated.maxBetDate = event.params.maxBetDate
 
-  eventCreated.blockNumber = event.block.number
-  eventCreated.blockTimestamp = event.block.timestamp
-  eventCreated.transactionHash = event.transaction.hash
+  groupEventCreated.blockNumber = event.block.number
+  groupEventCreated.blockTimestamp = event.block.timestamp
+  groupEventCreated.transactionHash = event.transaction.hash
 
-  eventCreated.save()
+  groupEventCreated.save()
 }
 
 export function handleGroupCreated(event: GroupCreatedEvent): void {

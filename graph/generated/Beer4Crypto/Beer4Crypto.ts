@@ -44,44 +44,6 @@ export class BetCreated__Params {
   }
 }
 
-export class EventCreated extends ethereum.Event {
-  get params(): EventCreated__Params {
-    return new EventCreated__Params(this);
-  }
-}
-
-export class EventCreated__Params {
-  _event: EventCreated;
-
-  constructor(event: EventCreated) {
-    this._event = event;
-  }
-
-  get eventId(): Bytes {
-    return this._event.parameters[0].value.toBytes();
-  }
-
-  get creator(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get eventDate(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-
-  get minDeposit(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
-
-  get groupId(): Bytes {
-    return this._event.parameters[4].value.toBytes();
-  }
-
-  get maxBetDate(): BigInt {
-    return this._event.parameters[5].value.toBigInt();
-  }
-}
-
 export class GroupCreated extends ethereum.Event {
   get params(): GroupCreated__Params {
     return new GroupCreated__Params(this);
@@ -101,6 +63,48 @@ export class GroupCreated__Params {
 
   get id(): Bytes {
     return this._event.parameters[1].value.toBytes();
+  }
+}
+
+export class GroupEventCreated extends ethereum.Event {
+  get params(): GroupEventCreated__Params {
+    return new GroupEventCreated__Params(this);
+  }
+}
+
+export class GroupEventCreated__Params {
+  _event: GroupEventCreated;
+
+  constructor(event: GroupEventCreated) {
+    this._event = event;
+  }
+
+  get id(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get creator(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get eventDate(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get minDeposit(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
+  get ended(): boolean {
+    return this._event.parameters[4].value.toBoolean();
+  }
+
+  get groupId(): Bytes {
+    return this._event.parameters[5].value.toBytes();
+  }
+
+  get maxBetDate(): BigInt {
+    return this._event.parameters[6].value.toBigInt();
   }
 }
 
@@ -331,48 +335,6 @@ export class CreateBetCall__Outputs {
   }
 }
 
-export class CreateEventCall extends ethereum.Call {
-  get inputs(): CreateEventCall__Inputs {
-    return new CreateEventCall__Inputs(this);
-  }
-
-  get outputs(): CreateEventCall__Outputs {
-    return new CreateEventCall__Outputs(this);
-  }
-}
-
-export class CreateEventCall__Inputs {
-  _call: CreateEventCall;
-
-  constructor(call: CreateEventCall) {
-    this._call = call;
-  }
-
-  get eventDate(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get minDeposit(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-
-  get groupId(): Bytes {
-    return this._call.inputValues[2].value.toBytes();
-  }
-
-  get maxBetDate(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
-  }
-}
-
-export class CreateEventCall__Outputs {
-  _call: CreateEventCall;
-
-  constructor(call: CreateEventCall) {
-    this._call = call;
-  }
-}
-
 export class CreateGroupCall extends ethereum.Call {
   get inputs(): CreateGroupCall__Inputs {
     return new CreateGroupCall__Inputs(this);
@@ -403,6 +365,48 @@ export class CreateGroupCall__Outputs {
   _call: CreateGroupCall;
 
   constructor(call: CreateGroupCall) {
+    this._call = call;
+  }
+}
+
+export class CreateGroupEventCall extends ethereum.Call {
+  get inputs(): CreateGroupEventCall__Inputs {
+    return new CreateGroupEventCall__Inputs(this);
+  }
+
+  get outputs(): CreateGroupEventCall__Outputs {
+    return new CreateGroupEventCall__Outputs(this);
+  }
+}
+
+export class CreateGroupEventCall__Inputs {
+  _call: CreateGroupEventCall;
+
+  constructor(call: CreateGroupEventCall) {
+    this._call = call;
+  }
+
+  get eventDate(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get minDeposit(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get groupId(): Bytes {
+    return this._call.inputValues[2].value.toBytes();
+  }
+
+  get maxBetDate(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
+  }
+}
+
+export class CreateGroupEventCall__Outputs {
+  _call: CreateGroupEventCall;
+
+  constructor(call: CreateGroupEventCall) {
     this._call = call;
   }
 }
