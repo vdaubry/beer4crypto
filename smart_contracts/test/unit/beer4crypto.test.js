@@ -212,8 +212,10 @@ if (!developmentChains.includes(network.name)) {
 
             it("should revert if bet amount is less than minDeposit", async function () {
                 await expect(
-                    beer4crypto.createBet(eventId, predictedEthprice, { value: minDeposit - 1 })
-                ).to.be.revertedWith("Bet amount less than minDeposit")
+                    beer4crypto.createBet(eventId, predictedEthprice, {
+                        value: ethers.utils.parseEther("0.5"),
+                    })
+                ).to.be.revertedWith("Min Bet amount is not met")
             })
 
             it("should revert if caller is not a member of the group", async function () {
@@ -228,7 +230,7 @@ if (!developmentChains.includes(network.name)) {
                 ).to.be.revertedWith("Caller not a group member")
             })
 
-            it.only("should revert if caller already has a bet for the event", async function () {
+            it("should revert if caller already has a bet for the event", async function () {
                 await beer4crypto.createBet(eventId, predictedEthprice, { value: minDeposit })
                 await expect(
                     beer4crypto.createBet(eventId, predictedEthprice, { value: minDeposit })
