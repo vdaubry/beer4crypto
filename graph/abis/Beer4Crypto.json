@@ -125,7 +125,11 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "eventId", "type": "bytes32" },
+      {
+        "internalType": "bytes32",
+        "name": "eventId",
+        "type": "bytes32"
+      },
       {
         "internalType": "uint256",
         "name": "predictedEthPrice",
@@ -139,10 +143,26 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "eventDate", "type": "uint256" },
-      { "internalType": "uint256", "name": "minDeposit", "type": "uint256" },
-      { "internalType": "bytes32", "name": "groupId", "type": "bytes32" },
-      { "internalType": "uint256", "name": "maxBetDate", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "eventDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minDeposit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "groupId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxBetDate",
+        "type": "uint256"
+      }
     ],
     "name": "createEvent",
     "outputs": [],
@@ -151,8 +171,16 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "groupName", "type": "string" },
-      { "internalType": "string", "name": "nickname", "type": "string" }
+      {
+        "internalType": "string",
+        "name": "groupName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "nickname",
+        "type": "string"
+      }
     ],
     "name": "createGroup",
     "outputs": [],
@@ -161,15 +189,31 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "eventId", "type": "bytes32" },
-      { "internalType": "address", "name": "memberAddress", "type": "address" }
+      {
+        "internalType": "bytes32",
+        "name": "eventId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "memberAddress",
+        "type": "address"
+      }
     ],
     "name": "getBet",
     "outputs": [
       {
         "components": [
-          { "internalType": "address", "name": "creator", "type": "address" },
-          { "internalType": "uint256", "name": "betDate", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "betDate",
+            "type": "uint256"
+          },
           {
             "internalType": "uint256",
             "name": "predictedEthPrice",
@@ -185,7 +229,11 @@
             "name": "status",
             "type": "uint8"
           },
-          { "internalType": "bytes32", "name": "eventId", "type": "bytes32" }
+          {
+            "internalType": "bytes32",
+            "name": "eventId",
+            "type": "bytes32"
+          }
         ],
         "internalType": "struct Beer4Crypto.Bet",
         "name": "",
@@ -197,23 +245,51 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "groupId", "type": "bytes32" },
-      { "internalType": "uint256", "name": "eventDate", "type": "uint256" }
+      {
+        "internalType": "bytes32",
+        "name": "groupId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eventDate",
+        "type": "uint256"
+      }
     ],
     "name": "getGroupEvent",
     "outputs": [
       {
         "components": [
-          { "internalType": "bytes32", "name": "id", "type": "bytes32" },
-          { "internalType": "address", "name": "creator", "type": "address" },
-          { "internalType": "uint256", "name": "eventDate", "type": "uint256" },
+          {
+            "internalType": "bytes32",
+            "name": "id",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "eventDate",
+            "type": "uint256"
+          },
           {
             "internalType": "uint256",
             "name": "minDeposit",
             "type": "uint256"
           },
-          { "internalType": "bool", "name": "ended", "type": "bool" },
-          { "internalType": "bytes32", "name": "groupId", "type": "bytes32" },
+          {
+            "internalType": "bool",
+            "name": "ended",
+            "type": "bool"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "groupId",
+            "type": "bytes32"
+          },
           {
             "internalType": "uint256",
             "name": "maxBetDate",
@@ -235,9 +311,21 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "memberAddress", "type": "address" },
-      { "internalType": "string", "name": "memberNickname", "type": "string" },
-      { "internalType": "bytes32", "name": "groupId", "type": "bytes32" }
+      {
+        "internalType": "address",
+        "name": "memberAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "memberNickname",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "groupId",
+        "type": "bytes32"
+      }
     ],
     "name": "inviteMember",
     "outputs": [],
@@ -246,11 +334,25 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "groupId", "type": "bytes32" },
-      { "internalType": "address", "name": "member", "type": "address" }
+      {
+        "internalType": "bytes32",
+        "name": "groupId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "member",
+        "type": "address"
+      }
     ],
     "name": "isMember",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   }

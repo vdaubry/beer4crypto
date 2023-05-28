@@ -6,6 +6,7 @@ const { network, ethers } = require("hardhat")
 
 const frontendAddressesFile = "../frontend/constants/contract_addresses.json"
 const frontendContractAbiFile = "../frontend/constants/contract_abi.json"
+const graphContractAbiFile = "../graph/abis/Beer4Crypto.json"
 
 module.exports = async (hre) => {
     await updateAddresses()
@@ -43,8 +44,8 @@ const updateAbi = async () => {
     const abiFile = path.resolve(abisDir, "contracts_Beer4Crypto_sol_Beer4Crypto.abi")
     const abi = JSON.parse(fs.readFileSync(abiFile, "utf8"))
 
-    // write the ABI to the frontend constants file
     fs.writeFileSync(frontendContractAbiFile, JSON.stringify(abi, null, 2))
+    fs.writeFileSync(graphContractAbiFile, JSON.stringify(abi, null, 2))
 }
 
 module.exports.tags = ["all", "frontend"]
