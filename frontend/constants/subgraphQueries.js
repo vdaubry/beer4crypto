@@ -1,5 +1,33 @@
 import { gql } from "@apollo/client"
 
+const GET_GROUPS_BY_MEMBER = gql`
+  query GetGroupsByMember($address: Bytes!) {
+    members(where: { memberAddress: $address }) {
+      group {
+        id
+        name
+      }
+    }
+  }
+`
+
+const GET_GROUP_EVENTS = gql`
+  query GetGroupEvents($groupId: Bytes!) {
+    groups(where: { id: $groupId }) {
+      events {
+        id
+        maxBetDate
+        minDeposit
+        eventDate
+        ended
+        creator {
+          memberAddress
+        }
+      }
+    }
+  }
+`
+
 const GET_MEMBER_INVITEDS = gql`
   query GetMemberInviteds($memberAddress: String!) {
     memberInviteds(where: { memberAddress: $memberAddress }) {
@@ -22,29 +50,4 @@ const GET_GROUP_MEMBERS = gql`
   }
 `
 
-const GET_GROUPS_BY_MEMBER = gql`
-  query GetGroupsByMember($address: Bytes!) {
-    members(where: { memberAddress: $address }) {
-      group {
-        id
-        name
-      }
-    }
-  }
-`
-
-const GET_GROUP_EVENTS = gql`
-  query GetGroupEventCreateds($groupId: Bytes!) {
-    groupEventCreateds(where: { groupId: $groupId }) {
-      id
-      creator
-      eventDate
-      minDeposit
-      ended
-      groupId
-      maxBetDate
-    }
-  }
-`
-
-export { GET_GROUPS_BY_MEMBER, GET_MEMBER_INVITEDS, GET_GROUP_MEMBERS, GET_GROUP_EVENTS }
+export { GET_GROUPS_BY_MEMBER, GET_GROUP_EVENTS, GET_MEMBER_INVITEDS, GET_GROUP_MEMBERS }

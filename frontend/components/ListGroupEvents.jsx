@@ -2,9 +2,6 @@
 
 import React from "react"
 import Link from "next/link"
-import { useState, useEffect } from "react"
-import { contractAddresses, contractAbi } from "@/constants/index"
-import { useNetwork, useAccount, useContractRead } from "wagmi"
 import { formatDate, formatAddress } from "@/utils/format"
 import { GET_GROUP_EVENTS } from "@/constants/subgraphQueries"
 import { useQuery } from "@apollo/client"
@@ -13,27 +10,13 @@ const ListGroupEvents = (params) => {
   const {
     loading,
     error,
-    data: groupEvents,
+    data: data,
   } = useQuery(GET_GROUP_EVENTS, {
     variables: { groupId: params.groupId },
   })
 
-  // const { chain } = useNetwork()
-  // const { address: account } = useAccount()
-
-  // let contractAddress
-
-  // if (chain && contractAddresses[chain.id]) {
-  //   const chainId = chain.id
-  //   contractAddress = contractAddresses[chainId]["contract"]
-  // }
-
-  // const { data: eventList } = useContractRead({
-  //   address: contractAddress,
-  //   abi: contractAbi,
-  //   functionName: "listGroupEvents",
-  //   args: [groupId.groupId],
-  // })
+  if (loading) return null
+  if (error) return `Error! ${error}`
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">
@@ -60,21 +43,24 @@ const ListGroupEvents = (params) => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {groupEvents?.groupEventCreateds?.map((event, i) => (
-                        <tr key={i}>
-                          <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                            <Link href={`/events/${event.eventDate}`}>
-                              {formatDate(event.eventDate)}
-                            </Link>
-                          </td>
-                          <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                            {formatAddress(event.creator)}
-                          </td>
-                          <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                            {event.ended.toString()}
-                          </td>
-                        </tr>
-                      ))}
+                      {data.groups
+                        .map((group) => group.events)
+                        .flat()
+                        .map((event, i) => (
+                          <tr key={i}>
+                            <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
+                              <Link href={`/events/${event.eventDate}`}>
+                                {formatDate(event.eventDate)}
+                              </Link>
+                            </td>
+                            <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
+                              {formatAddress(event.creator.memberAddress)}
+                            </td>
+                            <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
+                              {event.ended.toString()}
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
