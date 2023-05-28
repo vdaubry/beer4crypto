@@ -28,14 +28,14 @@ async function main() {
     await inviteMember(user1, user2, "user2", group3Id)
 
     // Create events for Group1
-    const group1Event1 = await createGroupEvent(
+    const group1Event1Id = await createGroupEvent(
         deployer,
         group1Id,
         new Date("01/30/2025").getTime(),
         MIN_DEPOSIT,
         new Date("01/23/2025").getTime()
     )
-    const group1Event2 = await createGroupEvent(
+    const group1Event2Id = await createGroupEvent(
         deployer,
         group1Id,
         new Date("03/20/2025").getTime(),
@@ -43,12 +43,12 @@ async function main() {
         new Date("03/13/2025").getTime()
     )
 
-    // // Create bets for Group1 Event1
-    // await createBet(deployer, group1Event1.id, 1850, MIN_DEPOSIT)
-    // await createBet(user1, group1Event1.id, 1950, MIN_DEPOSIT)
+    // Create bets for Group1 Event1
+    await createBet(deployer, group1Event1Id, 1850, MIN_DEPOSIT)
+    await createBet(user1, group1Event1Id, 1950, MIN_DEPOSIT)
 
-    // // Create bets for Group1 Event2
-    // await createBet(deployer, group1Event2.id, 1850, MIN_DEPOSIT)
+    // Create bets for Group1 Event2
+    await createBet(deployer, group1Event2Id, 1850, MIN_DEPOSIT)
 }
 
 main()

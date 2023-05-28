@@ -41,13 +41,15 @@ const createGroupEvent = async (deployer, groupId, eventDate, minDeposit, maxBet
     const crypto4beer = await ethers.getContract("Beer4Crypto", deployer)
 
     const tx1 = await crypto4beer.createGroupEvent(eventDate, minDeposit, groupId, maxBetDate)
-    await tx1.wait()
+    const receipt = await tx1.wait()
+    const event = receipt.events.find((event_params) => event_params.event === "GroupEventCreated")
+    return event.args.id
 }
 
 const createBet = async (better, eventId, predictedEthPrice, amount) => {
     console.log(
         `CreateBet called with:
-            deployer: ${deployer},
+            better: ${better},
             eventId: ${eventId},
             predictedEthPrice: ${predictedEthPrice},
         `

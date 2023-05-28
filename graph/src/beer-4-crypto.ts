@@ -4,11 +4,13 @@ import {
   GroupCreated as GroupCreatedEvent,
   MemberInvited as MemberInvitedEvent,
   GroupEventCreated as GroupEventCreatedEvent,
+  BetCreated as BetCreatedEvent
 } from "../generated/Beer4Crypto/Beer4Crypto"
 import {
   Group,
   Member,
   GroupEvent,
+  Bet
 } from "../generated/schema"
 
 
@@ -30,7 +32,7 @@ export function handleGroupCreated(event: GroupCreatedEvent): void {
 }
 
 export function handleMemberInvited(event: MemberInvitedEvent): void {
-  let memberId = getMemberInvitedEventIdFromParams(event.params.groupId, event.params.memberAddress)
+  let memberId = getMemberIdFromParams(event.params.groupId, event.params.memberAddress)
   let member = Member.load(memberId)
 
   if(!member) {
@@ -59,7 +61,7 @@ export function handleGroupEventCreated(event: GroupEventCreatedEvent): void {
     ) 
   }
   
-  groupEvent.creator = getMemberInvitedEventIdFromParams(event.params.groupId, event.params.creator) 
+  groupEvent.creator = getMemberIdFromParams(event.params.groupId, event.params.creator) 
   groupEvent.eventDate = event.params.eventDate
   groupEvent.minDeposit = event.params.minDeposit
   groupEvent.ended = event.params.ended
@@ -73,6 +75,38 @@ export function handleGroupEventCreated(event: GroupEventCreatedEvent): void {
   groupEvent.save()
 }
 
+export function handleBetCreated(event: BetCreatedEvent): void {
+  log.info('Index new Bet for event: {}', [event.params.eventId.toHexString()])
+  let betId = getBetIdFromParams(event.params.eventId, event.params.creator)
+  let bet = Bet.load(betId)
+
+  if(!bet) {
+    bet = new Bet(
+      betId
+    ) 
+  }
+
+  bet.creator = getMemberIdFromParams(event.params.groupId, event.params.creator)
+  bet.group = event.params.groupId
+  bet.amountDeposited = event.params.amountDeposited
+  bet.predictedEthPrice = event.params.predictedEthPrice
+  bet.groupEvent = event.params.eventId
+
+  bet.blockNumber = event.block.number
+  bet.blockTimestamp = event.block.timestamp
+  bet.transactionHash = event.transaction.hash
+
+  bet.save()
+}
+
+
+function getMemberIdFromParams(groupId: Bytes, memberAddress: Address): Bytes {
+  return groupId.concat(memberAddress as Bytes)
+}
+
+function getBetIdFromParams(eventId: Bytes, memberAddress: Address): Bytes {
+  return Bytes.fromHexString(eventId.toHexString() + memberAddress.toHexString())
+}
 
 // import { log } from '@graphprotocol/graph-ts'
 // import { BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
@@ -172,12 +206,4 @@ export function handleGroupEventCreated(event: GroupEventCreatedEvent): void {
 //   invite.transactionHash = event.transaction.hash
 
 //   invite.save()
-// }
-
-function getMemberInvitedEventIdFromParams(groupId: Bytes, memberAddress: Address): Bytes {
-  return groupId.concat(memberAddress as Bytes)
-}
-
-// function getBetCreatedIdFromParams(eventId: Bytes, memberAddress: Address): Bytes {
-//   return Bytes.fromHexString(eventId.toHexString() + memberAddress.toHexString())
 // }

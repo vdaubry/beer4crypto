@@ -16,6 +16,7 @@ dataSources:
         - Group
         - Member
         - GroupEvent
+        - Bet
       abis:
         - name: Beer4Crypto
           file: ./abis/Beer4Crypto.json
@@ -26,4 +27,6 @@ dataSources:
           handler: handleMemberInvited
         - event: GroupEventCreated(bytes32,address,uint256,uint256,bool,bytes32,uint256)
           handler: handleGroupEventCreated
+        - event: BetCreated(address,bytes32,uint256,uint256,bytes32)
+          handler: handleBetCreated
       file: ./src/beer-4-crypto.ts
