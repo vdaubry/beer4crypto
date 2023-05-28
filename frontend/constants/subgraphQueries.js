@@ -28,20 +28,21 @@ const GET_GROUP_EVENTS = gql`
   }
 `
 
-const GET_MEMBER_INVITEDS = gql`
-  query GetMemberInviteds($memberAddress: String!) {
-    memberInviteds(where: { memberAddress: $memberAddress }) {
-      id
-      groupId
-      memberAddress
-      nickname
+const GET_GROUP_MEMBERS = gql`
+  query GetGroupMembers($groupId: Bytes!) {
+    groups(where: { id: $groupId }) {
+      members {
+        id
+        memberAddress
+        nickname
+      }
     }
   }
 `
 
-const GET_GROUP_MEMBERS = gql`
-  query GetMemberInviteds($groupId: Bytes!) {
-    memberInviteds(where: { groupId: $groupId }) {
+const GET_MEMBER_INVITEDS = gql`
+  query GetMemberInviteds($memberAddress: String!) {
+    memberInviteds(where: { memberAddress: $memberAddress }) {
       id
       groupId
       memberAddress

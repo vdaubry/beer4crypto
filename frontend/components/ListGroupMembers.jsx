@@ -8,10 +8,13 @@ const ListGroupMembers = (params) => {
   const {
     loading,
     error,
-    data: members,
+    data: data,
   } = useQuery(GET_GROUP_MEMBERS, {
     variables: { groupId: params.groupId },
   })
+
+  if (loading) return null
+  if (error) return `Error! ${error}`
 
   return (
     <div className="flex items-center justify-center w-full h-full bg-gradient-to-r from-red-100 via-white to-red-100">
@@ -35,16 +38,19 @@ const ListGroupMembers = (params) => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {members?.memberInviteds?.map((member, i) => (
-                        <tr key={i}>
-                          <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                            {member.nickname}
-                          </td>
-                          <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                            {member.memberAddress}
-                          </td>
-                        </tr>
-                      ))}
+                      {data.groups
+                        .map((group) => group.members)
+                        .flat()
+                        .map((member, i) => (
+                          <tr key={i}>
+                            <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
+                              {member.nickname}
+                            </td>
+                            <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
+                              {member.memberAddress}
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
