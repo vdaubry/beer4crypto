@@ -1,42 +1,45 @@
-type BetCreated @entity(immutable: true) {
-  id: Bytes!
-  creator: Bytes! # address
-  groupId: Bytes! # bytes32
-  amountDeposited: BigInt! # uint256
-  predictedEthPrice: BigInt! # uint256
-  eventId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type GroupEventCreated @entity(immutable: true) {
-  id: Bytes!
-  creator: Bytes! # address
-  eventDate: BigInt! # uint256
-  minDeposit: BigInt! # uint256
-  ended: Boolean! # bool
-  groupId: Bytes! # bytes32
-  maxBetDate: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type GroupCreated @entity(immutable: true) {
+type Group @entity(immutable: false) {
   id: Bytes!
   name: String! # string
+  members: [Member!]! @derivedFrom(field: "group")
+  events: [GroupEvent!]! @derivedFrom(field: "group")
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type MemberInvited @entity(immutable: true) {
+type Member @entity(immutable: false) {
   id: Bytes!
-  groupId: Bytes! # bytes32
+  group: Group!
+  createdEvents: [GroupEvent!]! @derivedFrom(field: "creator")
   memberAddress: Bytes! # address
   nickname: String! # string
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type GroupEvent @entity(immutable: false) {
+  id: Bytes!
+  creator: Member! # address
+  eventDate: BigInt! # uint256
+  minDeposit: BigInt! # uint256
+  ended: Boolean! # bool
+  group: Group! # bytes32
+  maxBetDate: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+# type BetCreated @entity(immutable: true) {
+#   id: Bytes!
+#   creator: Bytes! # address
+#   groupId: Bytes! # bytes32
+#   amountDeposited: BigInt! # uint256
+#   predictedEthPrice: BigInt! # uint256
+#   eventId: Bytes! # bytes32
+#   blockNumber: BigInt!
+#   blockTimestamp: BigInt!
+#   transactionHash: Bytes!
+# }

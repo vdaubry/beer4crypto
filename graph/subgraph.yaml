@@ -13,20 +13,17 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - BetCreated
-        - GroupEventCreated
-        - GroupCreated
-        - MemberInvited
+        - Group
+        - Member
+        - GroupEvent
       abis:
         - name: Beer4Crypto
           file: ./abis/Beer4Crypto.json
       eventHandlers:
-        - event: BetCreated(address,bytes32,uint256,uint256,bytes32)
-          handler: handleBetCreated
-        - event: GroupEventCreated(bytes32,address,uint256,uint256,bool,bytes32,uint256)
-          handler: handleGroupEventCreated
         - event: GroupCreated(string,bytes32)
           handler: handleGroupCreated
         - event: MemberInvited(bytes32,address,string)
           handler: handleMemberInvited
+        - event: GroupEventCreated(bytes32,address,uint256,uint256,bool,bytes32,uint256)
+          handler: handleGroupEventCreated
       file: ./src/beer-4-crypto.ts
