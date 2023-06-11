@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.18;
 
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "../node_modules/hardhat/console.sol";
 
 contract Beer4Crypto {
@@ -46,6 +47,8 @@ contract Beer4Crypto {
   mapping(bytes32 groupId => mapping(uint256 eventDate => bytes32 eventId)) private eventToGroups;
   mapping(bytes32 eventId => mapping(address memberAddress => Bet)) private betToEvents;
 
+  AggregatorV3Interface private priceFeed;
+
   event GroupCreated(string name, bytes32 id);
   event MemberInvited(bytes32 groupId, address memberAddress, string nickname);
   event GroupEventCreated(
@@ -69,6 +72,10 @@ contract Beer4Crypto {
   modifier onlyMember(bytes32 groupId) {
     require(isMember(groupId, msg.sender), "Caller not a group member");
     _;
+  }
+
+  constructor(address priceFeedAddress) {
+    priceFeed = AggregatorV3Interface(priceFeedAddress);
   }
 
   function createGroup(string memory groupName, string memory nickname) public {
@@ -150,6 +157,11 @@ contract Beer4Crypto {
       groupEvent.id,
       groupEvent.groupId
     );
+  }
+
+  function getPrice() internal view returns (uint256) {
+    (, int256 answer, , , ) = priceFeed.latestRoundData();
+    return uint256(answer * 1e10); // 1* 10 ** 10 == 10000000000
   }
 
   function isMember(bytes32 groupId, address member) public view returns (bool) {

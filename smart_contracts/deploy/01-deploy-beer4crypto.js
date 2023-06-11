@@ -3,54 +3,63 @@ const { developmentChains, VERIFICATION_BLOCK_CONFIRMATIONS } = require("../help
 const { verify } = require("../utils/verify")
 
 module.exports = async (hre) => {
-    const { getNamedAccounts, deployments } = hre
-    const { deploy, log } = deployments
-    const { deployer } = await getNamedAccounts()
-    const waitBlockConfirmations = developmentChains.includes(network.name)
-        ? 1
-        : VERIFICATION_BLOCK_CONFIRMATIONS
+  const { getNamedAccounts, deployments } = hre
+  const { deploy, log } = deployments
+  const { deployer } = await getNamedAccounts()
+  const waitBlockConfirmations = developmentChains.includes(network.name)
+    ? 1
+    : VERIFICATION_BLOCK_CONFIRMATIONS
+  const chainName = network.name
 
-    /***********************************
-     *
-     * Deploy smart contract
-     *
-     ************************************/
+  /***********************************
+   *
+   * Deploy smart contract
+   *
+   ************************************/
 
-    log("---------------------------------")
-    log(`Deploy Beer4Crypto with owner : ${deployer}`)
+  log("---------------------------------")
+  log(`Deploy Beer4Crypto with owner : ${deployer}`)
 
-    // Debug info
-    // const deployerEthBalance = await ethers.provider.getBalance(deployer)
-    // console.log(
-    //   `Deployer balance: ${ethers.utils.formatEther(deployerEthBalance)} ETH`
-    // );
+  // Debug info
+  // const deployerEthBalance = await ethers.provider.getBalance(deployer)
+  // console.log(
+  //   `Deployer balance: ${ethers.utils.formatEther(deployerEthBalance)} ETH`
+  // );
 
-    const arguments = []
-    await deploy("Beer4Crypto", {
-        from: deployer,
-        args: arguments,
-        log: true,
-        waitConfirmations: waitBlockConfirmations,
-        /* adjust if ProviderError: transaction underpriced */
-        //gasPrice: ethers.utils.parseUnits("200", "gwei"),
-        //gasLimit: 30000000,
-    })
+  let ethUsdPriceFeddAddress
+  if (developmentChains.includes(chainName)) {
+    const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+    ethUsdPriceFeddAddress = ethUsdAggregator.address
+  } else {
+    ethUsdPriceFeddAddress = networkConfig[chainId]["ethUsdPriceFeddAddress"]
+  }
 
-    log("---------------------------------")
-    log(`Beer4Crypto deployed with owner : ${deployer}`)
+  const arguments = [ethUsdPriceFeddAddress]
+  await deploy("Beer4Crypto", {
+    from: deployer,
+    args: arguments,
+    log: true,
+    waitConfirmations: waitBlockConfirmations,
+    /* adjust if ProviderError: transaction underpriced */
+    //gasPrice: ethers.utils.parseUnits("200", "gwei"),
+    //gasLimit: 30000000,
+  })
 
-    const beer4crypto = await ethers.getContract("Beer4Crypto", deployer)
+  log("---------------------------------")
+  log(`Beer4Crypto deployed with owner : ${deployer}`)
 
-    /***********************************
-     *
-     *  Verify the deployment
-     *
-     ************************************/
-    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-        log("Verifying...")
-        await verify(beer4crypto.address, arguments)
-    }
-    log("----------------------------------------------------")
+  const beer4crypto = await ethers.getContract("Beer4Crypto", deployer)
+
+  /***********************************
+   *
+   *  Verify the deployment
+   *
+   ************************************/
+  if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+    log("Verifying...")
+    await verify(beer4crypto.address, arguments)
+  }
+  log("----------------------------------------------------")
 }
 
 module.exports.tags = ["all", "beer4crypto"]
