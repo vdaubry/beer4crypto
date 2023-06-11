@@ -43,7 +43,7 @@ module.exports = async (hre) => {
 
     /***********************************
      *
-     *  rify the deployment
+     *  Verify the deployment
      *
      ************************************/
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {

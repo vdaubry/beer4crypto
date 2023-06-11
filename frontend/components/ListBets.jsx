@@ -61,7 +61,7 @@ const ListBets = (params) => {
                               {formatDate(bet.betDate * 1000)}
                             </td>
                             <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                              {bet.amountDeposited}
+                              {truncatedAmount(bet.amountDeposited)}
                             </td>
                           </tr>
                         ))}

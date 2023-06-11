@@ -11,7 +11,7 @@ SMART_CONTRACTS_PATH="$BASE_PATH/smart_contracts"
 GRAPH_PATH="$BASE_PATH/graph"
 LOGS_PATH="$BASE_PATH/logs"
 
-# Stop any running graph-node and hardhat node
+# Stop any running graph node and hardhat node
 pkill -f "graph"
 pkill -f "hardhat"
 
