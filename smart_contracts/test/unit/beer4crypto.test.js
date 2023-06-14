@@ -262,15 +262,44 @@ if (!developmentChains.includes(network.name)) {
         await user2ConnectedBeer4Crypto.createBet(event.id, user2PredictedEthprice, {
           value: minDeposit,
         })
-
-        await time.increase(86400) // 1 day
       })
 
-      it.only("should pick winner with closest predicted ETH price", async function () {
-        await beer4crypto.pickWinner(event.id)
+      context("event ended", function () {
+        beforeEach(async () => {
+          await time.increase(86400) // 1 day
+        })
+        it("should pick winner with closest predicted ETH price", async function () {
+          await beer4crypto.pickWinner(event.id)
 
-        const groupEvent = await beer4crypto.getGroupEvent(groupId, event.eventDate)
-        expect(groupEvent.winner).to.equal(user2)
+          const groupEvent = await beer4crypto.getGroupEvent(groupId, event.eventDate)
+          expect(groupEvent.winner).to.equal(user2)
+          expect(groupEvent.actualEthPrice).to.equal("2000")
+        })
+
+        it("should revert if winner has already been picked", async function () {
+          await beer4crypto.pickWinner(event.id)
+          await expect(beer4crypto.pickWinner(event.id)).to.be.revertedWith(
+            "Winner already picked"
+          )
+        })
+
+        context("user is not member of the group", function () {
+          it("should revert", async function () {
+            const user3 = (await getNamedAccounts()).user3
+            const signer = await ethers.getSigner(user3)
+            const connectedBeer4Crypto = await beer4crypto.connect(signer)
+
+            await expect(connectedBeer4Crypto.pickWinner(event.id)).to.be.revertedWith(
+              "Caller not a group member"
+            )
+          })
+        })
+      })
+
+      context("event not ended", function () {
+        it("should revert", async function () {
+          await expect(beer4crypto.pickWinner(event.id)).to.be.revertedWith("Event not ended yet")
+        })
       })
     })
 

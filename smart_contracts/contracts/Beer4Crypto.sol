@@ -69,7 +69,7 @@ contract Beer4Crypto {
   }
 
   modifier eventEnded(bytes32 eventId) {
-    require(groupEvents[eventId].eventDate < block.timestamp, "Event has not ended yet");
+    require(groupEvents[eventId].eventDate < block.timestamp, "Event not ended yet");
     _;
   }
 
@@ -158,10 +158,7 @@ contract Beer4Crypto {
     bytes32 eventId
   ) public onlyMember(groupEvents[eventId].groupId) eventEnded(eventId) {
     GroupEvent storage groupEvent = groupEvents[eventId];
-
-    if (groupEvent.winner != address(0)) {
-      return;
-    }
+    require(groupEvent.winner == address(0), "Winner already picked");
 
     uint256 ethPrice = getPrice();
     Bet[] memory bets = eventBets[groupEvent.id];
