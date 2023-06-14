@@ -1,17 +1,20 @@
 const { assert, expect } = require("chai")
 const { deployments, ethers, getNamedAccounts } = require("hardhat")
 const { developmentChains } = require("../../helper-hardhat-config")
+const { time } = require("@nomicfoundation/hardhat-network-helpers")
 
 if (!developmentChains.includes(network.name)) {
   describe.skip
 } else {
   describe("beer4crypto", () => {
-    let deployer
+    let deployer, user1, user2
 
     beforeEach(async () => {
       await deployments.fixture(["all"])
       deployer = (await getNamedAccounts()).deployer
       provider = ethers.provider
+      user1 = (await getNamedAccounts()).user1
+      user2 = (await getNamedAccounts()).user2
 
       beer4crypto = await ethers.getContract("Beer4Crypto", deployer)
     })
@@ -212,7 +215,6 @@ if (!developmentChains.includes(network.name)) {
       })
 
       it("should revert if caller is not a member of the group", async function () {
-        const user1 = (await getNamedAccounts()).user1
         const signer = await ethers.getSigner(user1)
         const connectedBeer4Crypto = await beer4crypto.connect(signer)
 
@@ -228,6 +230,47 @@ if (!developmentChains.includes(network.name)) {
         await expect(
           beer4crypto.createBet(event.id, predictedEthprice, { value: minDeposit })
         ).to.be.revertedWith("Bet already exists")
+      })
+    })
+
+    describe("pickWinner", function () {
+      let groupId, event, minDeposit
+
+      beforeEach(async () => {
+        groupId = await createGroup("MyGroup", "DeployerNickname")
+
+        await beer4crypto.inviteMember(user1, "User1 Nickname", groupId)
+        await beer4crypto.inviteMember(user2, "User2 Nickname", groupId)
+
+        const eventDate = Math.floor(Date.now() / 1000) + 86400 // 1 day from now
+        minDeposit = ethers.utils.parseEther("1")
+        const maxBetDate = Math.floor(Date.now() / 1000) + 43200 // 12 hours from now
+
+        await beer4crypto.createGroupEvent(eventDate, minDeposit, groupId, maxBetDate)
+        event = await beer4crypto.getGroupEvent(groupId, eventDate)
+
+        const user1PredictedEthprice = "1900"
+        const signer1 = await ethers.getSigner(user1)
+        const user1ConnectedBeer4Crypto = await beer4crypto.connect(signer1)
+        await user1ConnectedBeer4Crypto.createBet(event.id, user1PredictedEthprice, {
+          value: minDeposit,
+        })
+
+        const user2PredictedEthprice = "2050"
+        const signer2 = await ethers.getSigner(user2)
+        const user2ConnectedBeer4Crypto = await beer4crypto.connect(signer2)
+        await user2ConnectedBeer4Crypto.createBet(event.id, user2PredictedEthprice, {
+          value: minDeposit,
+        })
+
+        await time.increase(86400) // 1 day
+      })
+
+      it.only("should pick winner with closest predicted ETH price", async function () {
+        await beer4crypto.pickWinner(event.id)
+
+        const groupEvent = await beer4crypto.getGroupEvent(groupId, event.eventDate)
+        expect(groupEvent.winner).to.equal(user2)
       })
     })
 

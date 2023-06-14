@@ -17,7 +17,7 @@ const networkConfig = {
 const developmentChains = ["hardhat", "localhost"]
 const VERIFICATION_BLOCK_CONFIRMATIONS = 6
 const DECIMALS = 8
-const INITIAL_ANSWER = 200000000000
+const INITIAL_ANSWER = 200000000000 // 2000 * 10 ** DECIMALS = 2000 USD
 
 module.exports = {
   networkConfig,

@@ -68,7 +68,7 @@ contract Beer4Crypto {
     _;
   }
 
-  modifier eventNotEnded(bytes32 eventId) {
+  modifier eventEnded(bytes32 eventId) {
     require(groupEvents[eventId].eventDate < block.timestamp, "Event has not ended yet");
     _;
   }
@@ -154,23 +154,10 @@ contract Beer4Crypto {
     );
   }
 
-  function withdraw(
-    bytes32 eventId
-  ) public onlyMember(groupEvents[eventId].groupId) eventNotEnded(eventId) {
-    GroupEvent memory groupEvent = groupEvents[eventId];
-    require(groupEvent.id != 0, "Event does not exist");
-    require(betToEvents[groupEvent.id][msg.sender].creator != address(0), "Bet does not exist");
-    require(groupEvent.winner == msg.sender, "Caller is not the winner");
-
-    Bet memory bet = betToEvents[groupEvent.id][msg.sender];
-    uint256 amount = bet.amountDeposited;
-  }
-
   function pickWinner(
     bytes32 eventId
-  ) public onlyMember(groupEvents[eventId].groupId) eventNotEnded(eventId) {
-    GroupEvent memory groupEvent = groupEvents[eventId];
-    require(groupEvent.id != 0, "Event does not exist");
+  ) public onlyMember(groupEvents[eventId].groupId) eventEnded(eventId) {
+    GroupEvent storage groupEvent = groupEvents[eventId];
 
     if (groupEvent.winner != address(0)) {
       return;
@@ -181,19 +168,32 @@ contract Beer4Crypto {
     Bet memory currentClosestBet = bets[0];
     for (uint256 i = 0; i < bets.length; i++) {
       if (
-        abs(int256(bets[i].predictedEthPrice - ethPrice)) <
-        abs(int256(currentClosestBet.predictedEthPrice - ethPrice))
+        abs(int256(bets[i].predictedEthPrice) - int256(ethPrice)) <
+        abs(int256(currentClosestBet.predictedEthPrice) - int256(ethPrice))
       ) {
         currentClosestBet = bets[i];
       }
     }
 
     groupEvent.winner = currentClosestBet.creator;
+    groupEvent.actualEthPrice = ethPrice;
   }
+
+  // function withdraw(
+  //   bytes32 eventId
+  // ) public onlyMember(groupEvents[eventId].groupId) eventEnded(eventId) {
+  //   GroupEvent memory groupEvent = groupEvents[eventId];
+  //   require(groupEvent.id != 0, "Event does not exist");
+  //   require(betToEvents[groupEvent.id][msg.sender].creator != address(0), "Bet does not exist");
+  //   require(groupEvent.winner == msg.sender, "Caller is not the winner");
+
+  //   Bet memory bet = betToEvents[groupEvent.id][msg.sender];
+  //   uint256 amount = bet.amountDeposited;
+  // }
 
   function getPrice() internal view returns (uint256) {
     (, int256 answer, , , ) = priceFeed.latestRoundData();
-    return uint256(answer * 1e10); // 1* 10 ** 10 == 10000000000
+    return uint256(answer / 10 ** 8); // 8 decimals for USDC
   }
 
   function isMember(bytes32 groupId, address member) public view returns (bool) {
