@@ -38,7 +38,7 @@ const ListGroupEvents = (params) => {
                           creator
                         </th>
                         <th className="border-b font-medium p-4 pl-8 pt-0 pb-3 text-slate-400 text-left">
-                          ended
+                          winner
                         </th>
                       </tr>
                     </thead>
@@ -57,7 +57,7 @@ const ListGroupEvents = (params) => {
                               {formatAddress(event.creator.memberAddress)}
                             </td>
                             <td className="border-b border-slate-100 p-4 pl-8 text-slate-500">
-                              {event.ended.toString()}
+                              {formatAddress(event.creator.winner)}
                             </td>
                           </tr>
                         ))}

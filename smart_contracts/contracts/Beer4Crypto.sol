@@ -5,21 +5,16 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "../node_modules/hardhat/console.sol";
 
 contract Beer4Crypto {
-  enum BetStatus {
-    PENDING,
-    LOST,
-    WON
-  }
-
   struct GroupEvent {
     bytes32 id;
     address creator;
     uint256 eventDate;
     uint256 minDeposit;
-    bool ended;
     bytes32 groupId;
     uint256 maxBetDate;
     uint256 actualEthPrice;
+    address winner;
+    uint256 totalAmountDeposited;
   }
 
   struct Bet {
@@ -27,7 +22,6 @@ contract Beer4Crypto {
     uint256 betDate;
     uint256 predictedEthPrice;
     uint256 amountDeposited;
-    BetStatus status;
     bytes32 eventId;
   }
 
@@ -46,6 +40,7 @@ contract Beer4Crypto {
   mapping(bytes32 groupId => mapping(address memberAddress => Member)) private groupToMembers;
   mapping(bytes32 groupId => mapping(uint256 eventDate => bytes32 eventId)) private eventToGroups;
   mapping(bytes32 eventId => mapping(address memberAddress => Bet)) private betToEvents;
+  mapping(bytes32 eventId => Bet[]) private eventBets;
 
   AggregatorV3Interface private priceFeed;
 
@@ -56,7 +51,6 @@ contract Beer4Crypto {
     address creator,
     uint256 eventDate,
     uint256 minDeposit,
-    bool ended,
     bytes32 groupId,
     uint256 maxBetDate
   );
@@ -71,6 +65,11 @@ contract Beer4Crypto {
 
   modifier onlyMember(bytes32 groupId) {
     require(isMember(groupId, msg.sender), "Caller not a group member");
+    _;
+  }
+
+  modifier eventNotEnded(bytes32 eventId) {
+    require(groupEvents[eventId].eventDate < block.timestamp, "Event has not ended yet");
     _;
   }
 
@@ -103,21 +102,21 @@ contract Beer4Crypto {
     require(eventToGroups[groupId][eventDate] == 0, "Event already exists");
 
     bytes32 eventId = keccak256(abi.encodePacked(groupId, eventDate));
-    bool ended = false;
     GroupEvent memory groupEvent = GroupEvent(
       eventId,
       msg.sender,
       eventDate,
       minDeposit,
-      ended,
       groupId,
       maxBetDate,
+      0,
+      address(0),
       0
     );
     groupEvents[eventId] = groupEvent;
     eventToGroups[groupId][eventDate] = eventId;
 
-    emit GroupEventCreated(eventId, msg.sender, eventDate, minDeposit, ended, groupId, maxBetDate);
+    emit GroupEventCreated(eventId, msg.sender, eventDate, minDeposit, groupId, maxBetDate);
   }
 
   function inviteMember(
@@ -131,23 +130,19 @@ contract Beer4Crypto {
     emit MemberInvited(groupId, memberAddress, memberNickname);
   }
 
-  function createBet(bytes32 eventId, uint256 predictedEthPrice) public payable {
-    GroupEvent memory groupEvent = groupEvents[eventId];
-    require(groupEvent.id != 0, "Event does not exist");
-    require(isMember(groupEvent.groupId, msg.sender), "Caller not a group member");
+  function createBet(
+    bytes32 eventId,
+    uint256 predictedEthPrice
+  ) public payable onlyMember(groupEvents[eventId].groupId) {
+    GroupEvent storage groupEvent = groupEvents[eventId];
     require(groupEvent.maxBetDate > block.timestamp, "Bets are closed");
     require(msg.value >= groupEvent.minDeposit, "Min Bet amount is not met");
     require(betToEvents[groupEvent.id][msg.sender].creator == address(0), "Bet already exists");
 
-    Bet memory bet = Bet(
-      msg.sender,
-      block.timestamp,
-      predictedEthPrice,
-      msg.value,
-      BetStatus.PENDING,
-      groupEvent.id
-    );
+    Bet memory bet = Bet(msg.sender, block.timestamp, predictedEthPrice, msg.value, groupEvent.id);
     betToEvents[groupEvent.id][msg.sender] = bet;
+    eventBets[groupEvent.id].push(bet);
+    groupEvent.totalAmountDeposited += msg.value;
 
     emit BetCreated(
       msg.sender,
@@ -157,6 +152,43 @@ contract Beer4Crypto {
       groupEvent.id,
       groupEvent.groupId
     );
+  }
+
+  function withdraw(
+    bytes32 eventId
+  ) public onlyMember(groupEvents[eventId].groupId) eventNotEnded(eventId) {
+    GroupEvent memory groupEvent = groupEvents[eventId];
+    require(groupEvent.id != 0, "Event does not exist");
+    require(betToEvents[groupEvent.id][msg.sender].creator != address(0), "Bet does not exist");
+    require(groupEvent.winner == msg.sender, "Caller is not the winner");
+
+    Bet memory bet = betToEvents[groupEvent.id][msg.sender];
+    uint256 amount = bet.amountDeposited;
+  }
+
+  function pickWinner(
+    bytes32 eventId
+  ) public onlyMember(groupEvents[eventId].groupId) eventNotEnded(eventId) {
+    GroupEvent memory groupEvent = groupEvents[eventId];
+    require(groupEvent.id != 0, "Event does not exist");
+
+    if (groupEvent.winner != address(0)) {
+      return;
+    }
+
+    uint256 ethPrice = getPrice();
+    Bet[] memory bets = eventBets[groupEvent.id];
+    Bet memory currentClosestBet = bets[0];
+    for (uint256 i = 0; i < bets.length; i++) {
+      if (
+        abs(int256(bets[i].predictedEthPrice - ethPrice)) <
+        abs(int256(currentClosestBet.predictedEthPrice - ethPrice))
+      ) {
+        currentClosestBet = bets[i];
+      }
+    }
+
+    groupEvent.winner = currentClosestBet.creator;
   }
 
   function getPrice() internal view returns (uint256) {
@@ -182,5 +214,9 @@ contract Beer4Crypto {
 
   function getGroup(bytes32 groupId) public view returns (Group memory) {
     return groups[groupId];
+  }
+
+  function abs(int256 a) internal pure returns (uint256) {
+    return a < 0 ? uint256(-a) : uint256(a);
   }
 }

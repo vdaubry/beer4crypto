@@ -101,12 +101,6 @@
       },
       {
         "indexed": false,
-        "internalType": "bool",
-        "name": "ended",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
         "internalType": "bytes32",
         "name": "groupId",
         "type": "bytes32"
@@ -248,11 +242,6 @@
             "type": "uint256"
           },
           {
-            "internalType": "enum Beer4Crypto.BetStatus",
-            "name": "status",
-            "type": "uint8"
-          },
-          {
             "internalType": "bytes32",
             "name": "eventId",
             "type": "bytes32"
@@ -335,11 +324,6 @@
             "type": "uint256"
           },
           {
-            "internalType": "bool",
-            "name": "ended",
-            "type": "bool"
-          },
-          {
             "internalType": "bytes32",
             "name": "groupId",
             "type": "bytes32"
@@ -352,6 +336,16 @@
           {
             "internalType": "uint256",
             "name": "actualEthPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "winner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalAmountDeposited",
             "type": "uint256"
           }
         ],
@@ -408,6 +402,32 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "eventId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "pickWinner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "eventId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

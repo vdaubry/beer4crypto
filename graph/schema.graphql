@@ -25,9 +25,10 @@ type GroupEvent @entity(immutable: false) {
   creator: Member! # address
   eventDate: BigInt! # uint256
   minDeposit: BigInt! # uint256
-  ended: Boolean! # bool
-  group: Group! # bytes32
+  group: Group!
   maxBetDate: BigInt! # uint256
+  actualEthPrice: BigInt # Value of ETH in USD when the winner is picked
+  winner: Member # address of the winner once it is known
   bets: [Bet!]! @derivedFrom(field: "groupEvent")
   blockNumber: BigInt!
   blockTimestamp: BigInt!

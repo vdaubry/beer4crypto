@@ -19,8 +19,10 @@ const GET_GROUP_EVENTS = gql`
         maxBetDate
         minDeposit
         eventDate
-        ended
         creator {
+          memberAddress
+        }
+        winner {
           memberAddress
         }
       }
