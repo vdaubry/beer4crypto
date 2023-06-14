@@ -159,6 +159,7 @@ contract Beer4Crypto {
   ) public onlyMember(groupEvents[eventId].groupId) eventEnded(eventId) {
     GroupEvent storage groupEvent = groupEvents[eventId];
     require(groupEvent.winner == address(0), "Winner already picked");
+    require(eventBets[groupEvent.id].length > 0, "No bets");
 
     uint256 ethPrice = getPrice();
     Bet[] memory bets = eventBets[groupEvent.id];
@@ -176,17 +177,17 @@ contract Beer4Crypto {
     groupEvent.actualEthPrice = ethPrice;
   }
 
-  // function withdraw(
-  //   bytes32 eventId
-  // ) public onlyMember(groupEvents[eventId].groupId) eventEnded(eventId) {
-  //   GroupEvent memory groupEvent = groupEvents[eventId];
-  //   require(groupEvent.id != 0, "Event does not exist");
-  //   require(betToEvents[groupEvent.id][msg.sender].creator != address(0), "Bet does not exist");
-  //   require(groupEvent.winner == msg.sender, "Caller is not the winner");
+  function withdraw(
+    bytes32 eventId
+  ) public onlyMember(groupEvents[eventId].groupId) eventEnded(eventId) {
+    GroupEvent storage groupEvent = groupEvents[eventId];
+    require(groupEvent.winner == msg.sender, "Caller not winner");
+    require(groupEvent.totalAmountDeposited > 0, "No funds to withdraw");
 
-  //   Bet memory bet = betToEvents[groupEvent.id][msg.sender];
-  //   uint256 amount = bet.amountDeposited;
-  // }
+    uint256 amount = groupEvent.totalAmountDeposited;
+    groupEvent.totalAmountDeposited = 0;
+    payable(msg.sender).transfer(amount);
+  }
 
   function getPrice() internal view returns (uint256) {
     (, int256 answer, , , ) = priceFeed.latestRoundData();
