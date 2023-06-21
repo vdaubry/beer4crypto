@@ -25,7 +25,7 @@ dataSources:
           handler: handleGroupCreated
         - event: MemberInvited(bytes32,address,string)
           handler: handleMemberInvited
-        - event: GroupEventCreated(bytes32,address,uint256,uint256,bool,bytes32,uint256)
+        - event: GroupEventCreated(bytes32,address,uint256,uint256,bytes32,uint256)
           handler: handleGroupEventCreated
         - event: BetCreated(address,uint256,uint256,uint256,bytes32,bytes32)
           handler: handleBetCreated

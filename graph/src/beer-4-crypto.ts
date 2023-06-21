@@ -9,6 +9,7 @@ import {
 import { Group, Member, GroupEvent, Bet } from "../generated/schema";
 
 export function handleGroupCreated(event: GroupCreatedEvent): void {
+  log.info("Index new Group: {}", [event.params.id.toHexString()]);
   let group = Group.load(event.params.id);
 
   if (!group) {
@@ -24,6 +25,7 @@ export function handleGroupCreated(event: GroupCreatedEvent): void {
 }
 
 export function handleMemberInvited(event: MemberInvitedEvent): void {
+  log.info("Index new Member: {}", [event.params.groupId.toHexString()]);
   let memberId = getMemberIdFromParams(
     event.params.groupId,
     event.params.memberAddress
@@ -46,6 +48,7 @@ export function handleMemberInvited(event: MemberInvitedEvent): void {
 }
 
 export function handleGroupEventCreated(event: GroupEventCreatedEvent): void {
+  log.info("Index new GroupEvent: {}", [event.params.id.toHexString()]);
   let groupEvent = GroupEvent.load(event.params.id);
 
   if (!groupEvent) {
